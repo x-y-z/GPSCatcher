@@ -96,21 +96,54 @@ void readline(void) {
       buffer[buffidx++]= c;
   }
 }
-int user_req = '0';
+int cStatus = 0;
+int freq = 0;
 void loop() 
 {
   uint32_t tmp;
+  uint32_t avail;
+  char user_req;
 
- 
-  if (Serial.available() > 0)
+  avail = Serial.available();
+  //Serial.println(avail, DEC);
+  if (avail > 0)
   {
     user_req = Serial.read();
-    Serial.println("GPS status changed");
+    avail--;
+    if (user_req != '0' && user_req != '1')
+    {
+      while (avail > 0)
+      {
+        Serial.read();
+        avail--;
+      }
+    }
+    else
+    {
+      cStatus = user_req - '0';
+      freq = 0;
+      while (avail > 0)
+      {
+        user_req = Serial.read();
+        avail--;
+        
+        if (user_req == ',')
+        {
+          continue;
+        }
+        else if (user_req >= '0' && user_req <= '9')
+        {
+          freq = freq*10 + user_req - '0';
+        }
+      }
+    }
   }
+  //Serial.println(freq, DEC);
   
-  if (user_req == '0')
+  if (cStatus == 0)
      return;
- 
+  
+  delay(freq);
   
   Serial.print("\n\rRead: ");
   readline();
