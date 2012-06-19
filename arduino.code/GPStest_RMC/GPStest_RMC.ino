@@ -98,52 +98,53 @@ void readline(void) {
 }
 int cStatus = 0;
 int freq = 0;
+int rStatus = 0;//0:on/off, 1:freq
 void loop() 
 {
   uint32_t tmp;
-  uint32_t avail;
+  //uint32_t avail;
   char user_req;
 
-  avail = Serial.available();
   //Serial.println(avail, DEC);
-  if (avail > 0)
+  while (Serial.available() > 0)
   {
     user_req = Serial.read();
-    avail--;
-    if (user_req != '0' && user_req != '1')
-    {
-      while (avail > 0)
-      {
-        Serial.read();
-        avail--;
-      }
-    }
-    else
+    //avail--;
+    if (rStatus == 0 && (user_req == '0' || user_req == '1'))
     {
       cStatus = user_req - '0';
+      rStatus = 1;
       freq = 0;
-      while (avail > 0)
+      continue;
+    }
+    
+    if (rStatus == 1)  
+    {      
+      if (user_req >= '0' && user_req <= '9')
       {
-        user_req = Serial.read();
-        avail--;
-        
-        if (user_req == ',')
-        {
-          continue;
-        }
-        else if (user_req >= '0' && user_req <= '9')
-        {
-          freq = freq*10 + user_req - '0';
-        }
+        freq = freq*10 + user_req - '0';
       }
+      else if (user_req == '.')
+      {
+        rStatus = 0;
+      }
+      else
+      {
+        continue;
+      }
+      
     }
   }
   //Serial.println(freq, DEC);
-  
+  //if (Serial.available())
+  //cStatus = Serial.read() - '0';
+  //Serial.flush();
   if (cStatus == 0)
+  {
      return;
+  }
   
-  delay(freq);
+  
   
   Serial.print("\n\rRead: ");
   readline();
@@ -239,7 +240,9 @@ void loop()
     Serial.print((longitude%10000)*6/1000, DEC); Serial.print('.');
     Serial.print(((longitude%10000)*6/10)%100, DEC); Serial.println('"');
    
+    delay(freq);
   }
   //Serial.println(buffer);
+
 }
 
