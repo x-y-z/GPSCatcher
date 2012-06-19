@@ -24,9 +24,12 @@ typedef struct packet{
     char longitude[20];
 } packet;
 
-packet s_pack;
+packet s_pack[10];
+uint s_pack_idx = 0;
+uint s_pack_sz = 0;
 int readStatus = 1;//0:nothing, 1:wait for date, 2:wait for time, 3:wait for latitude, 4:wait for longtitude
 int writeStatus = 0;
+int readFreq = 0;
 
 int readline(const char *in, int in_len, char *out, int* out_len);
 void *start_server(void * arg);
@@ -55,8 +58,7 @@ int main()
     char buf[255];
     char line[255];
     int lineidx = 0;
-    const char *work = "1";
-    const char *stop = "0";
+    char command[100];
     int init = 0;
     memset(buf, 0, 255);
     memset(line, 0, 255);
@@ -66,13 +68,17 @@ int main()
         memset(buf, 0, 255);
         //set gps status
         pthread_mutex_lock(&mutex);
-        if (writeStatus == 1)
-            write(fd, work, 1);
-        else if (writeStatus == 0)
-            write(fd, stop, 1);
+        
+        memset(command, 0, 100);
+        sprintf(command, "%d,%d.", writeStatus, readFreq);
+        //printf("write arduino:%s\n",command);
+        write(fd, command, strlen(command));
+
         pthread_mutex_unlock(&mutex);
 
         int bytes_read = read(fd, buf, 1);
+        
+        //printf("data is: %s\n", line);
 
         if (bytes_read == 0)
             continue;
@@ -94,34 +100,39 @@ int main()
                     break;
                 case 1://copy to date buf
                     pthread_mutex_lock(&mutex);
-                    memset(s_pack.time, 0, 20);
-                    memcpy(s_pack.time, p_buf, buf_sz + 1);
-                    //printf("date is: %s", s_pack.date);
+                    memset(s_pack[s_pack_idx].time, 0, 20);
+                    memcpy(s_pack[s_pack_idx].time, p_buf, buf_sz + 1);
+//                  printf("date is: %s", s_pack.date);
                     readStatus = 2;
                     pthread_mutex_unlock(&mutex);
                     break;
                 case 2://copy to time buf
                     pthread_mutex_lock(&mutex);
-                    memset(s_pack.date, 0, 20);
-                    memcpy(s_pack.date, p_buf, buf_sz + 1);
-                    //printf("time is: %s", s_pack.time);
+                    memset(s_p[s_pack_idx]ack.date, 0, 20);
+                    memcpy(s_[s_pack_idx]pack.date, p_buf, buf_sz + 1);
+//                   printf("time is: %s", s_pack.time);
                     readStatus = 3;
                     pthread_mutex_unlock(&mutex);
                     break;
                 case 3://copy to latitude buf
                     pthread_mutex_lock(&mutex);
-                    memset(s_pack.latitude, 0, 20);
-                    memcpy(s_pack.latitude, p_buf, buf_sz + 1);
-                    //printf("time is: %s", s_pack.latitude);
+                    memset(s_pack[s_pack_idx].latitude, 0, 20);
+                    memcpy(s_pack[s_pack_idx].latitude, p_buf, buf_sz + 1);
+//                    printf("latitude is: %s", s_pack.latitude);
                     readStatus = 4;
                     pthread_mutex_unlock(&mutex);
                     break;
                 case 4://copy to longitude buf
                     pthread_mutex_lock(&mutex);
-                    memset(s_pack.longitude, 0, 20);
-                    memcpy(s_pack.longitude, p_buf, buf_sz + 1);
-                    //printf("data is: %s", (char*)&s_pack);
+                    memset(s_pack[s_pack_idx].longitude, 0, 20);
+                    memcpy(s_pack[s_pack_idx].longitude, p_buf, buf_sz + 1);
+//                    printf("longitude is: %s", (char*)&s_pack);
                     readStatus = 5;
+                    s_pack_idx = (s_pack_idx + 1) % 10;
+                    if (s_pack_sz + 1 > 10)
+                        s_pack_sz = 10;
+                    else
+                        s_pack_sz++;
                     pthread_mutex_unlock(&mutex);
                     break;
                 default:
@@ -244,6 +255,28 @@ void *start_server(void * arg)
           // echo back the message to the client
           char send_data[100] = {0};
           char recv_data[100] = {0};
+          int send_cnt = 0;
+
+          recv(fd, recv_data, 100, 0);
+
+          printf("Server received: %s", recv_data);
+
+          if (strncmp(recv_data, "0", 1) == 0)
+          {
+              pthread_mutex_lock(&mutex);
+              writeStatus = 0;
+              readFreq = 0;
+              pthread_mutex_unlock(&mutex);
+          }
+          else
+          {
+              pthread_mutex_lock(&mutex);
+              writeStatus = 1;
+              readFreq = atoi(recv_data + 2);
+              pthread_mutex_unlock(&mutex);
+              send_cnt = recv_data[0] - '0';
+          }
+
 
           //lock
           int loop = 1;
@@ -255,12 +288,18 @@ void *start_server(void * arg)
                   sprintf(send_data, "stop\n");
                   loop = 0;
               }
-              else if (readStatus == 5)
+              else if (readStatus == 5 || s_pack_sz != 0)
               {    
-                printf("spack: date:%stime:%slat:%slong:%s", s_pack.date, s_pack.time, s_pack.latitude, s_pack.longitude);
-                sprintf(send_data, "%s%s%s%s", s_pack.date, s_pack.time, s_pack.latitude, s_pack.longitude);
+                printf("spack: date:%stime:%slat:%slong:%s", s_pack[s_pack_idx].date, 
+                        s_pack[s_pack_idx].time, s_pack[s_pack_idx].latitude, s_pack[s_pack_idx].longitude);
+                int cnt = send_cnt > s_pack_sz? s_pack_sz:send_cnt;//cnt <= 9
+                sprintf(send_data, "%d\n", cnt);
+                for (int i = 0; i < cnt; i++)
+                {
+                    sprintf(send_data + 2 + i, "%s%s%s%s", s_pack[s_pack_idx].date, s_pack[s_pack_idx].time,
+                            s_pack[s_pack_idx].latitude, s_pack[s_pack_idx].longitude);
+                }
                 //timer = 0;
-                memset(&s_pack, 0, 80);
                 readStatus = 0;
                 loop = 0;
               }
@@ -272,21 +311,6 @@ void *start_server(void * arg)
           send(fd, send_data, strlen(send_data), 0);
 
           printf("Server sent message: %s\n", send_data);
-
-          recv(fd, recv_data, 100, 0);
-
-          if (strncmp(recv_data, "1", 1) == 0)
-          {
-              pthread_mutex_lock(&mutex);
-              writeStatus = 1;
-              pthread_mutex_unlock(&mutex);
-          }
-          else if (strncmp(recv_data, "0", 1) == 0)
-          {
-              pthread_mutex_lock(&mutex);
-              writeStatus = 0;
-              pthread_mutex_unlock(&mutex);
-          }
 
           // 7. close: close the socket connection
           close(fd);
