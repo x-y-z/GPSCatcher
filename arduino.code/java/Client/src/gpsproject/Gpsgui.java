@@ -108,8 +108,10 @@ class Gpsgui extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {   
 		        try {
 		    		s = new Socket("localhost", 12345);
-		    		out = s.getOutputStream();
+		    		PrintWriter out = new PrintWriter(s.getOutputStream(), true);
 		    		InputStream in = s.getInputStream(); 
+		    		out.println("4,0.");
+		    		
 		    		while (in.available() == 0);
 		    		
 //		    		while(true) {
@@ -126,12 +128,12 @@ class Gpsgui extends JFrame {
 		    					messagesReceived.setText("GPS is stopped.");
 		    				} else {
 		    					for(int i = 0; i < str.length; i++) {
-		    						messagesReceived.append(str[i]);
+		    						messagesReceived.append(str[i]+ "\n");
 		    					}
 		    					messagesReceived.append("\n");
 		    				}
 		    			}
-		    			out.write('1');
+		    			
 						s.close();
 				} catch (IOException e) {
 					messagesReceived.setText("An error has occurred.  No message was received.");
@@ -144,8 +146,9 @@ class Gpsgui extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {                	
 				try {
 		    		s = new Socket("localhost", 12345);
-		    		out = s.getOutputStream();
+		    		PrintWriter out = new PrintWriter(s.getOutputStream(), true);
 		    		InputStream in = s.getInputStream(); 
+		    		out.println("0,0.");
 		    		while (in.available() == 0);
 		    		
 //		    		while(true) {
@@ -153,7 +156,7 @@ class Gpsgui extends JFrame {
 		    			
 		    			in.read(buf);
 		    			
-		    			out.write('0');
+		    			
 						s.close();
 				} catch (IOException e) {
 	                // TODO Auto-generated catch block
