@@ -60,6 +60,7 @@ int main()
     int lineidx = 0;
     char command[100];
     int init = 0;
+    int oldWrite = writeStatus;
     memset(buf, 0, 255);
     memset(line, 0, 255);
 
@@ -69,8 +70,12 @@ int main()
         //set gps status
         pthread_mutex_lock(&mutex);
         
-        memset(command, 0, 100);
-        sprintf(command, "%d,%d.", writeStatus, readFreq);
+        if (oldWrite != writeStatus)
+        {
+            memset(command, 0, 100);
+            sprintf(command, "%d,%d.", writeStatus, readFreq);
+            oldWrite = writeStatus;
+        }
         //printf("write arduino:%s\n",command);
         write(fd, command, strlen(command));
 
@@ -108,8 +113,8 @@ int main()
                     break;
                 case 2://copy to time buf
                     pthread_mutex_lock(&mutex);
-                    memset(s_p[s_pack_idx]ack.date, 0, 20);
-                    memcpy(s_[s_pack_idx]pack.date, p_buf, buf_sz + 1);
+                    memset(s_pack[s_pack_idx].date, 0, 20);
+                    memcpy(s_pack[s_pack_idx].date, p_buf, buf_sz + 1);
 //                   printf("time is: %s", s_pack.time);
                     readStatus = 3;
                     pthread_mutex_unlock(&mutex);
@@ -133,6 +138,7 @@ int main()
                         s_pack_sz = 10;
                     else
                         s_pack_sz++;
+                    //printf("current pack size:%d\n",s_pack_sz);
                     pthread_mutex_unlock(&mutex);
                     break;
                 default:
@@ -253,7 +259,7 @@ void *start_server(void * arg)
           printf("Server got a connection from (%s, %d)\n", inet_ntoa(client_addr.sin_addr),ntohs(client_addr.sin_port));
           
           // echo back the message to the client
-          char send_data[100] = {0};
+          char send_data[1000] = {0};
           char recv_data[100] = {0};
           int send_cnt = 0;
 
@@ -294,10 +300,13 @@ void *start_server(void * arg)
                         s_pack[s_pack_idx].time, s_pack[s_pack_idx].latitude, s_pack[s_pack_idx].longitude);
                 int cnt = send_cnt > s_pack_sz? s_pack_sz:send_cnt;//cnt <= 9
                 sprintf(send_data, "%d\n", cnt);
-                for (int i = 0; i < cnt; i++)
+                int i;
+                for (i = 0; i < cnt; i++)
                 {
-                    sprintf(send_data + 2 + i, "%s%s%s%s", s_pack[s_pack_idx].date, s_pack[s_pack_idx].time,
-                            s_pack[s_pack_idx].latitude, s_pack[s_pack_idx].longitude);
+                    int idx = (s_pack_idx - i - 1 + 10) % 10;
+                    sprintf(send_data + strlen(send_data), "%s%s%s%s", 
+                            s_pack[idx].date, s_pack[idx].time,
+                            s_pack[idx].latitude, s_pack[idx].longitude);
                 }
                 //timer = 0;
                 readStatus = 0;
