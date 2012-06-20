@@ -61,6 +61,7 @@ int main()
     char command[100];
     int init = 0;
     int oldWrite = writeStatus;
+    int oldFreq = readFreq;
     memset(buf, 0, 255);
     memset(line, 0, 255);
 
@@ -70,14 +71,17 @@ int main()
         //set gps status
         pthread_mutex_lock(&mutex);
         
-        if (oldWrite != writeStatus)
+        if (oldWrite != writeStatus || oldFreq != readFreq)
         {
+            if (oldFreq != readFreq)
+                s_pack_sz = 1;
             memset(command, 0, 100);
             sprintf(command, "%d,%d.", writeStatus, readFreq);
             oldWrite = writeStatus;
+            oldFreq = readFreq;
+            write(fd, command, strlen(command));
         }
         //printf("write arduino:%s\n",command);
-        write(fd, command, strlen(command));
 
         pthread_mutex_unlock(&mutex);
 
@@ -150,7 +154,8 @@ int main()
             lineidx = 0;
             memset(line, 0, 255);
         }
-        line[lineidx++] = buf[0];
+        else
+            line[lineidx++] = buf[0];
 
     }
 
