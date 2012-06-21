@@ -312,6 +312,7 @@ void *start_server(void * arg)
                     sprintf(send_data + strlen(send_data), "%s%s%s%s", 
                             s_pack[idx].date, s_pack[idx].time,
                             s_pack[idx].latitude, s_pack[idx].longitude);
+                    s_pack_sz--;
                 }
                 //timer = 0;
                 readStatus = 0;
