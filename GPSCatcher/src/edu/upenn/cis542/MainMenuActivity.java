@@ -1,8 +1,6 @@
 package edu.upenn.cis542;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;

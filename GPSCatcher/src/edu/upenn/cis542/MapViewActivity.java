@@ -48,6 +48,14 @@ public class MapViewActivity extends MapActivity {
 		ipAddr = i.getStringExtra("IP_ADDR");
 		port = i.getStringExtra("PORT_NUM");
         
+		PlacesSearch ps = new PlacesSearch();
+		try {
+			ps.performSearch(39.952988f, -75.208895f);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
         tv = (TextView)findViewById(R.id.msg);
         
         MapView mapView = (MapView) findViewById(R.id.mapview);
