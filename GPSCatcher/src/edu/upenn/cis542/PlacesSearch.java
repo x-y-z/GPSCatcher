@@ -1,0 +1,97 @@
+package edu.upenn.cis542;
+
+import java.util.List;
+
+import com.google.api.client.googleapis.GoogleHeaders;
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestFactory;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.HttpResponseException;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.apache.ApacheHttpTransport;
+import com.google.api.client.json.JsonObjectParser;
+import com.google.api.client.json.jackson.JacksonFactory;
+import com.google.api.client.util.Key;
+
+
+public class PlacesSearch {
+	private static final String PLACES_SEARCH_URL = "https://maps.googleapis.com/maps/api/place/search/json?";
+
+	private static final boolean PRINT_AS_STRING = false;
+	private static final String API_KEY = "AIzaSyC5LOYZg67bGQTuutTYGnrCLEGkYE5MoM0";
+
+	public void performSearch() throws Exception {
+		try {
+			System.out.println("Perform Search ....");
+			System.out.println("-------------------");
+			HttpRequestFactory httpRequestFactory = createRequestFactory(transport);
+			HttpRequest request = httpRequestFactory
+					.buildGetRequest(new GenericUrl(PLACES_SEARCH_URL));
+			request.getUrl().put("key", API_KEY);
+			request.getUrl().put("location", 0 + "," + 0);
+			request.getUrl().put("radius", 500);
+			request.getUrl().put("sensor", "false");
+
+			/*if (PRINT_AS_STRING) {
+				System.out.println(request.execute().parseAsString());
+			} else {*/
+
+				PlacesList places = request.execute().parseAs(PlacesList.class);
+				System.out.println("STATUS = " + places.status);
+				for (Place place : places.results) {
+					System.out.println(place);
+				}
+			//}
+
+		} catch (HttpResponseException e) {
+			System.err.println(e);
+			throw e;
+		}
+	}
+
+	private static final HttpTransport transport = new ApacheHttpTransport();
+
+	public static HttpRequestFactory createRequestFactory(
+			final HttpTransport transport) {
+
+		return transport.createRequestFactory(new HttpRequestInitializer() {
+			public void initialize(HttpRequest request) {
+				GoogleHeaders headers = new GoogleHeaders();
+				headers.setApplicationName("Google-Places-DemoApp");
+				request.setHeaders(headers);
+				request.setParser(new JsonObjectParser(new JacksonFactory()));
+			}
+		});
+	}
+	
+	
+	public class PlacesList {
+
+		@Key
+		public String status;
+
+		@Key
+		public List<Place> results;
+
+	}
+
+	public class Place {
+
+		@Key
+		public String id;
+
+		@Key
+		public String name;
+
+		@Key
+		public String reference;
+
+		@Override
+		public String toString() {
+			return name + " - " + id + " - " + reference;
+		}
+
+	}
+
+}
