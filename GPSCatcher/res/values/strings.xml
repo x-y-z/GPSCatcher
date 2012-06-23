@@ -17,5 +17,6 @@
     <string name="defaultIP">192.168.0.1</string>
     <string name="defaultPort">12345</string>
     <string name="dbcheck">Check GPS Locations</string>
+    <string name="chase">Chase</string>
     
 </resources>

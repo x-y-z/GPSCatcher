@@ -68,8 +68,8 @@ public class MapViewActivity extends MapActivity {
 		mapOverlays = mapView.getOverlays();
 		project = mapView.getProjection();
 
-		Drawable red_dot = getResources().getDrawable(R.drawable.red_dot);
-		red_dot.setBounds(0, 0, red_dot.getIntrinsicWidth()/20, red_dot.getIntrinsicHeight()/20);
+		Drawable red_dot = getResources().getDrawable(R.drawable.red_dot);		
+		red_dot.setBounds(0, 0, red_dot.getIntrinsicWidth()/10, red_dot.getIntrinsicHeight()/10);
 		Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
 		itemizedoverlay = new GPSPoints(drawable, red_dot, this);
 
