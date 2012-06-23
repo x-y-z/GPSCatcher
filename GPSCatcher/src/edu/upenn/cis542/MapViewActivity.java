@@ -39,6 +39,9 @@ public class MapViewActivity extends MapActivity {
 	public static String frequency = "";
 	private String ipAddr;
 	private String port;
+	
+	private GeoPoint prePos = null;
+	private double totalDistance = 0;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -48,6 +51,14 @@ public class MapViewActivity extends MapActivity {
 		Intent i = getIntent();
 		ipAddr = i.getStringExtra("IP_ADDR");
 		port = i.getStringExtra("PORT_NUM");
+		
+		PlacesSearch ps = new PlacesSearch();
+		try {
+			ps.performSearch(39.952988f, -75.208895f);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		tv = (TextView)findViewById(R.id.msg);
 
@@ -57,12 +68,17 @@ public class MapViewActivity extends MapActivity {
 		mapOverlays = mapView.getOverlays();
 		project = mapView.getProjection();
 
+		Drawable red_dot = getResources().getDrawable(R.drawable.red_dot);
+		red_dot.setBounds(0, 0, red_dot.getIntrinsicWidth()/20, red_dot.getIntrinsicHeight()/20);
 		Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
-		itemizedoverlay = new GPSPoints(drawable, this);
+		itemizedoverlay = new GPSPoints(drawable, red_dot, this);
 
 		GeoPoint point = new GeoPoint(19240000,-99120000);
 		OverlayItem overlayitem = new OverlayItem(point, "Hola, Mundo!", "I'm in Mexico City!");
 
+		//http://developmentality.wordpress.com/2009/10/16/android-overlayitems
+		overlayitem.setMarker(red_dot);
+		
 		new GetArduinoPos().execute("");
 
 		itemizedoverlay.addOverlay(overlayitem);
@@ -110,7 +126,6 @@ public class MapViewActivity extends MapActivity {
 		}
 
 		protected void onPostExecute(String result){
-			float totalDistance = 0f;
 			DateFormat formatter;
 			if (result.startsWith("java.net"))
 			{
@@ -123,7 +138,7 @@ public class MapViewActivity extends MapActivity {
 			else{
 				String[] array = result.split("\n");
 				int entryCnt = Integer.parseInt(array[0]) * 4;
-				GeoPoint prePos = null;
+				
 
 				for (int i = 0; i < entryCnt; i += 4)
 				{
