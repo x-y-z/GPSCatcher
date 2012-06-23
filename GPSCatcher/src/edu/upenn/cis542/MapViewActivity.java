@@ -10,6 +10,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.TimeZone;
 
 import com.google.android.maps.GeoPoint;
@@ -39,6 +40,8 @@ public class MapViewActivity extends MapActivity {
 	private String ipAddr;
 	private String port;
 	
+	private static GeoPoint prePos = null;
+	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,11 +68,18 @@ public class MapViewActivity extends MapActivity {
         project = mapView.getProjection();
         
         Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
-        itemizedoverlay = new GPSPoints(drawable, this);
+        Drawable red_dot = getResources().getDrawable(R.drawable.red_dot);
+        red_dot.setBounds(0, 0, red_dot.getIntrinsicWidth()/20, red_dot.getIntrinsicHeight()/20);
+        itemizedoverlay = new GPSPoints(drawable, red_dot, this);
         
         GeoPoint point = new GeoPoint(19240000,-99120000);
         OverlayItem overlayitem = new OverlayItem(point, "Hola, Mundo!", "I'm in Mexico City!");
         
+        //http://developmentality.wordpress.com/2009/10/16/android-overlayitemsetmarkerdrawable-icon/
+        overlayitem.setMarker(red_dot);
+        
+        new GetArduinoPos().execute("");
+        new GetArduinoPos().execute("");
         new GetArduinoPos().execute("");
         
         itemizedoverlay.addOverlay(overlayitem);
@@ -84,6 +94,7 @@ public class MapViewActivity extends MapActivity {
 	
 	private class GetArduinoPos extends AsyncTask<String, Void, String>{
 
+
 		@Override
 		protected String doInBackground(String... arg0) {
 			// TODO Auto-generated method stub
@@ -94,7 +105,7 @@ public class MapViewActivity extends MapActivity {
 				InputStream in = s.getInputStream();
 				PrintWriter out = new PrintWriter(s.getOutputStream(), true);
 				if(num_directions.equals("") || frequency.equals("")) {
-					out.println("5,0.");
+					out.println("1,0.");
 				} else {
 					out.println(num_directions + "," + frequency + ".");
 				}
@@ -129,7 +140,7 @@ public class MapViewActivity extends MapActivity {
 			else{
 				String[] array = result.split("\n");
 				int entryCnt = Integer.parseInt(array[0]) * 4;
-				GeoPoint prePos = null;
+				//GeoPoint prePos = null;
 				
 				for (int i = 0; i < entryCnt; i += 4)
 				{
@@ -162,12 +173,14 @@ public class MapViewActivity extends MapActivity {
 					
 					String[] lat = la.split("\\*|'|\"");
 					
+					double offset = new Random().nextDouble();
+					
 					double latD = (double)Integer.parseInt(lat[0]) + 
-							laSign*(((double)Integer.parseInt(lat[1]))*60 + Double.parseDouble(lat[2]) + (double)i/10)/3600;
+							laSign*(((double)Integer.parseInt(lat[1]))*60 + Double.parseDouble(lat[2]) + offset)/3600;
 					String[] lon = lo.split("\\*|'|\"");
 	
 					double lonD = (double)Integer.parseInt(lon[0]) + 
-							loSign*(((double)Integer.parseInt(lon[1]))*60 + Double.parseDouble(lon[2]) + (double)i/(10+i))/3600;
+							loSign*(((double)Integer.parseInt(lon[1]))*60 + Double.parseDouble(lon[2]) + offset)/3600;
 					curPos = new GeoPoint((int)(latD*1E6), (int)(lonD*1E6));
 					tv.setText(curDate+"\n"+curPos);
 					
@@ -192,6 +205,7 @@ public class MapViewActivity extends MapActivity {
 				mc.setZoom(30);
 				mapView.invalidate();
 			}
+			
 		}
 		
 		private float CalculateDistance(GeoPoint s, GeoPoint e){

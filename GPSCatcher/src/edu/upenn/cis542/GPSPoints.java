@@ -14,19 +14,26 @@ public class GPSPoints extends ItemizedOverlay<OverlayItem> {
 
 	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
 	private Context mContext;
+	private Drawable histMarker;
 	
 	public GPSPoints(Drawable defaultMarker) {
 		super(boundCenterBottom(defaultMarker));
 		// TODO Auto-generated constructor stub
 	}
 
-	public GPSPoints(Drawable defaultMarker, Context context) {
+	public GPSPoints(Drawable defaultMarker, Drawable oldMarker, Context context) {
 		  super(boundCenterBottom(defaultMarker));
+		  histMarker = oldMarker;
 		  mContext = context;
 		}
 	
 	public void addOverlay(OverlayItem overlay) {
+		for (OverlayItem i : mOverlays)
+			i.setMarker(histMarker);
+
 	    mOverlays.add(overlay);
+	    //for item updating
+	    setLastFocusedIndex(-1);
 	    populate();
 	}
 	
