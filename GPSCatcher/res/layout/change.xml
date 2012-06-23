@@ -12,7 +12,6 @@
     
 <EditText android:layout_height="wrap_content" 
     android:layout_width="fill_parent" 
-    
     android:id="@+id/typing_directions"
     android:inputType="text" >
     </EditText>

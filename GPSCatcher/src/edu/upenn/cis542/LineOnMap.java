@@ -36,7 +36,7 @@ public class LineOnMap extends Overlay {
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setStrokeWidth(2);
 
-                Point p1 = new Point();
+        Point p1 = new Point();
         Point p2 = new Point();
         Path path = new Path();
 

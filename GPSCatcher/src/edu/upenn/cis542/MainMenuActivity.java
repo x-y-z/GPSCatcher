@@ -1,6 +1,5 @@
 package edu.upenn.cis542;
 
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +8,7 @@ import android.view.View;
 public class MainMenuActivity extends Activity {
 	public static final int MapViewActivity_ID = 1;
 	public static final int ChangeActivity_ID = 2;
+	public static final int DbCheckActivity_ID = 3;
 	private String ipAddr;
 	private String port;
 
@@ -34,6 +34,11 @@ public class MainMenuActivity extends Activity {
 		startActivityForResult(i, ChangeActivity_ID);
 	}
 
+	public void onDBClick(View view) {
+		Intent i = new Intent(this, DbCheckActivity.class);
+		startActivityForResult(i, DbCheckActivity_ID);
+	}
+	
 	public void onQuitClick(View view) {
 		finish();
 	}

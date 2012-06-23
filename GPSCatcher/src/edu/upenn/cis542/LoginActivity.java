@@ -1,5 +1,9 @@
 package edu.upenn.cis542;
 
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +14,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class LoginActivity extends Activity {
+	public static AndroidDb android;
+	public static CServerDb cserver;
+	
 	public void onCreate(Bundle b){
         super.onCreate(b);
         setContentView(R.layout.login);
@@ -54,14 +61,29 @@ public class LoginActivity extends Activity {
 			return;
 		}
 				
+		try {
+			Socket s = new Socket(ip, Integer.parseInt(port));
+			s.close();
+		} catch (UnknownHostException e) {
+			Toast.makeText(this, "This is not a valid host.", Toast.LENGTH_SHORT).show();
+			return;
+		} catch (IOException e) {
+			Toast.makeText(this, "This is not a valid socket/port.", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		
 		Intent i = new Intent(this, MainMenuActivity.class);
 		i.putExtra("IP_ADDR", ip);
 		i.putExtra("PORT_NUM", port);
 		startActivity(i);
 
+		android = new AndroidDb(this);
+		cserver = new CServerDb(this);
 	}
 
 	public void quitClick(View view) {
+		android.close();
+		cserver.close();
 		finish();
 	}
 	

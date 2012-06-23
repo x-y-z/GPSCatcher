@@ -9,12 +9,13 @@
     <string name="change">Update Frequency</string>
     <string name="change_explanation">Input </string>
     <string name="num_directions">Insert the number of directions to retrieve at a time</string>
-    <string name="change_freq">Insert the number of seconds to wait between each batch of instructions</string>
+    <string name="change_freq">Insert the number of milliseconds to wait between each batch of instructions</string>
     <string name="submit">Submit</string>
     <string name="login">Log In</string>
     <string name="ipAddr">IP Address</string>
     <string name="portNum">Port Number</string>
     <string name="defaultIP">192.168.0.1</string>
     <string name="defaultPort">12345</string>
+    <string name="dbcheck">Check GPS Locations</string>
     
 </resources>

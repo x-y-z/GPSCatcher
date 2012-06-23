@@ -22,6 +22,7 @@
         <activity android:name="MainMenuActivity" />
         <activity android:name="MapViewActivity" />
         <activity android:name="ChangeActivity" />
+        <activity android:name="DbCheckActivity" />
         <uses-library android:name="com.google.android.maps" />
     </application>
 

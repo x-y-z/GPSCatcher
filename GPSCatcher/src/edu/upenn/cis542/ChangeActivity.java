@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.EditText;
 
 public class ChangeActivity extends Activity {
-
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
