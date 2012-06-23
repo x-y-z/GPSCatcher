@@ -23,12 +23,14 @@ public class PlacesSearch {
 	private static final String API_KEY = "AIzaSyC5LOYZg67bGQTuutTYGnrCLEGkYE5MoM0";
 	
 	private PlacesList pl = null;
+	
+	private int radius = 10;
 
 	public PlacesList getPlaces(){
 		return pl;
 	}
 	
-	public void performSearch(float lat, float lng) throws Exception {
+	public void performSearch(double lat, double lng) throws Exception {
 		try {
 			System.out.println("Perform Search ....");
 			System.out.println("-------------------");
@@ -37,11 +39,21 @@ public class PlacesSearch {
 					.buildGetRequest(new GenericUrl(PLACES_SEARCH_URL));
 			request.getUrl().put("key", API_KEY);
 			request.getUrl().put("location", lat + "," + lng);
-			request.getUrl().put("radius", 500);
+			request.getUrl().put("radius", radius);
 			request.getUrl().put("sensor", "true");
 			request.getUrl().put("types", "food");
 
+			
 			pl = request.execute().parseAs(PlacesList.class);
+			
+			while(pl.results.size() < 5){
+				radius *= 2;
+				request.getUrl().put("radius", radius);
+				
+				pl = request.execute().parseAs(PlacesList.class);
+			}
+				
+			
 //			System.out.println("STATUS = " + places.status);
 //			for (Place place : places.results) {
 //				System.out.println(place);

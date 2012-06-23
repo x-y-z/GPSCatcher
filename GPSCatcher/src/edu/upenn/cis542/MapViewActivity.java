@@ -52,13 +52,7 @@ public class MapViewActivity extends MapActivity {
 		ipAddr = i.getStringExtra("IP_ADDR");
 		port = i.getStringExtra("PORT_NUM");
 		
-		PlacesSearch ps = new PlacesSearch();
-		try {
-			ps.performSearch(39.952988f, -75.208895f);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 
 		tv = (TextView)findViewById(R.id.msg);
 
@@ -192,6 +186,23 @@ public class MapViewActivity extends MapActivity {
 				}
 
 				tv.setText(curDate + "\n" + "Total Distance Traveled: " + totalDistance+ " meters");
+				
+				//provide restaurant at curPos
+				PlacesSearch ps = new PlacesSearch();
+				try {
+					ps.performSearch((double)curPos.getLatitudeE6()/1E6, (double)curPos.getLongitudeE6()/1E6);
+					PlacesList res = ps.getPlaces();
+					
+					if (res != null)
+					{
+						String msg = "STATUS:" + res.status +", Find " + res.results.size() + " POIs";
+						Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 				
 				MapView mapView = (MapView) findViewById(R.id.mapview);
 				MapController mc = mapView.getController();
