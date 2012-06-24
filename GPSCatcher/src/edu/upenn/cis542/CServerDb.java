@@ -8,10 +8,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class CServerDb extends SQLiteOpenHelper {
-	private static final String DATABASE_NAME = "cserverdb";
+	private static final String DATABASE_NAME = "dbcserver";
 	private static final int DATABASE_VERSION = 1;
 	private static final String CREATE_TABLE = "create table " +
-			"cserverdb (_id integer primary key autoincrement, dateTime text not null, " +
+			"dbcserver (_id integer primary key autoincrement, dateTime text not null, " +
 			"longitude text not null, latitude text not null);";
 		
 	private Activity parent;
@@ -30,6 +30,7 @@ public class CServerDb extends SQLiteOpenHelper {
 	@Override
 	public void onOpen(SQLiteDatabase db) {
 		super.onOpen(db);
+//		db.execSQL("DELETE FROM " + DATABASE_NAME);
 	}
 
 	@Override
@@ -37,6 +38,19 @@ public class CServerDb extends SQLiteOpenHelper {
 		// TODO Auto-generated method stub
 	}
 
+	public void clear() {
+		if (getWritableDatabase() != null)
+			getWritableDatabase().execSQL("DELETE FROM " + DATABASE_NAME);
+	}
+	
+	public void close() {
+
+		if (getWritableDatabase() != null)
+			getWritableDatabase().close();
+
+		super.close();
+	}
+	
 	public void insertLocation(String dateTime, String lat, String lng) {
 		ContentValues values = new ContentValues();
 		values.put("dateTime", dateTime);
@@ -47,7 +61,7 @@ public class CServerDb extends SQLiteOpenHelper {
 	
 	public String getLocations() {
 		String columns[] = {"longitude", "latitude"};
-		Cursor c = getWritableDatabase().query("cserverdb", columns, null, null, null, null, null);
+		Cursor c = getWritableDatabase().query("dbcserver", columns, null, null, null, null, null);
 		if(c == null) { 
 			return "" ; 
 		}
@@ -58,6 +72,7 @@ public class CServerDb extends SQLiteOpenHelper {
 		while (c.moveToNext()) {
 			returnValue += c.getString(columnLong) + "\t" + c.getString(columnLat) + "\n";
 		}
+		c.close();
 		return returnValue;
 	}
 }

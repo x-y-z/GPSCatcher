@@ -51,8 +51,6 @@ public class MapViewActivity extends MapActivity {
 		Intent i = getIntent();
 		ipAddr = i.getStringExtra("IP_ADDR");
 		port = i.getStringExtra("PORT_NUM");
-		
-		
 
 		tv = (TextView)findViewById(R.id.msg);
 
@@ -72,12 +70,11 @@ public class MapViewActivity extends MapActivity {
 
 		//http://developmentality.wordpress.com/2009/10/16/android-overlayitems
 		overlayitem.setMarker(red_dot);
-		
+
 		new GetArduinoPos().execute("");
 
 		itemizedoverlay.addOverlay(overlayitem);
 		mapOverlays.add(itemizedoverlay);
-		
 	}
 
 	@Override
@@ -132,7 +129,6 @@ public class MapViewActivity extends MapActivity {
 			else{
 				String[] array = result.split("\n");
 				int entryCnt = Integer.parseInt(array[0]) * 4;
-				
 
 				for (int i = 0; i < entryCnt; i += 4)
 				{
@@ -203,7 +199,7 @@ public class MapViewActivity extends MapActivity {
 					e.printStackTrace();
 				}
 				
-				
+				LoginActivity.cserver.close();
 				MapView mapView = (MapView) findViewById(R.id.mapview);
 				MapController mc = mapView.getController();
 				mc.animateTo(curPos);
