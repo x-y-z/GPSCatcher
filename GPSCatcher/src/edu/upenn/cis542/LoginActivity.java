@@ -75,15 +75,13 @@ public class LoginActivity extends Activity {
 		Intent i = new Intent(this, MainMenuActivity.class);
 		i.putExtra("IP_ADDR", ip);
 		i.putExtra("PORT_NUM", port);
-		startActivity(i);
-
-		android = new AndroidDb(this);
+		android = new AndroidDb(this); 
 		cserver = new CServerDb(this);
+		cserver.clear();
+		startActivity(i);
 	}
 
 	public void quitClick(View view) {
-		android.close();
-		cserver.close();
 		finish();
 	}
 	
