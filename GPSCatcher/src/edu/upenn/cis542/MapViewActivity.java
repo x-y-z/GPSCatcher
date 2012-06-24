@@ -73,6 +73,15 @@ public class MapViewActivity extends MapActivity {
 		//http://developmentality.wordpress.com/2009/10/16/android-overlayitems
 		overlayitem.setMarker(red_dot);
 		
+		Navigation ng = new Navigation();
+		try {
+			ng.performSearch(19.24, -99.12);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 		new GetArduinoPos().execute("");
 
 		itemizedoverlay.addOverlay(overlayitem);
