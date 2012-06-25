@@ -24,12 +24,18 @@
     android:onClick="onChangeClick">
     </Button>
 
-<Button android:text="@string/dbcheck" 
+<Button android:text="@string/gpscheck" 
     android:layout_width="wrap_content" 
     android:layout_height="wrap_content"
-    android:onClick="onDBClick">
+    android:onClick="onGpsDBClick">
     </Button>
 
+<Button android:text="@string/phonecheck" 
+    android:layout_width="wrap_content" 
+    android:layout_height="wrap_content"
+    android:onClick="onPhoneDBClick">
+    </Button>
+    
 <Button android:text="@string/quit" 
     android:id="@+id/quit" 
     android:layout_width="wrap_content" 

@@ -14,8 +14,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class LoginActivity extends Activity {
-	public static AndroidDb android;
-	public static CServerDb cserver;
+	public static DbTableCreator db;
 	
 	public void onCreate(Bundle b){
         super.onCreate(b);
@@ -75,9 +74,8 @@ public class LoginActivity extends Activity {
 		Intent i = new Intent(this, MainMenuActivity.class);
 		i.putExtra("IP_ADDR", ip);
 		i.putExtra("PORT_NUM", port);
-		android = new AndroidDb(this); 
-		cserver = new CServerDb(this);
-		cserver.clear();
+		db = new DbTableCreator(this); 
+//		db.clear();
 		startActivity(i);
 	}
 

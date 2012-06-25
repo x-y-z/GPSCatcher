@@ -8,7 +8,8 @@ import android.view.View;
 public class MainMenuActivity extends Activity {
 	public static final int MapViewActivity_ID = 1;
 	public static final int ChangeActivity_ID = 2;
-	public static final int DbCheckActivity_ID = 3;
+	public static final int CellCheckActivity_ID = 3;
+	public static final int GPSCheckActivity_ID = 4;
 	private String ipAddr;
 	private String port;
 
@@ -34,10 +35,15 @@ public class MainMenuActivity extends Activity {
 		startActivityForResult(i, ChangeActivity_ID);
 	}
 
-	public void onDBClick(View view) {
-		Intent i = new Intent(this, DbCheckActivity.class);
-		startActivityForResult(i, DbCheckActivity_ID);
+	public void onPhoneDBClick(View view) {
+		Intent i = new Intent(this, CellCheckActivity.class);
+		startActivityForResult(i, CellCheckActivity_ID);
 	}
+	
+	public void onGpsDBClick(View view) {
+		Intent i = new Intent(this, GPSCheckActivity.class);
+		startActivityForResult(i, GPSCheckActivity_ID);
+	} 
 	
 	public void onQuitClick(View view) {
 		finish();

@@ -20,9 +20,12 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 import com.google.android.maps.Projection;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -43,6 +46,8 @@ public class MapViewActivity extends MapActivity {
 	
 	private GeoPoint prePos = null;
 	private double totalDistance = 0;
+	public LocationManager locationManager;
+	public String provider;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -69,26 +74,44 @@ public class MapViewActivity extends MapActivity {
 		
 		Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
 		itemizedoverlay = new GPSPoints(drawable, red_dot, this);
-		POIs = new GPSPoints(star, this);
-
-		//GeoPoint point = new GeoPoint(19240000,-99120000);
-		//OverlayItem overlayitem = new OverlayItem(point, "Hola, Mundo!", "I'm in Mexico City!");
-
-		//http://developmentality.wordpress.com/2009/10/16/android-overlayitems
-		//overlayitem.setMarker(red_dot);
-
-		
-		/*Navigation ng = new Navigation();
-		try {
-			ng.performSearch(19.24, -99.12);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		
+		POIs = new GPSPoints(star, this);		
 
 		new GetArduinoPos().execute("");
 
+		locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+		provider = LocationManager.GPS_PROVIDER;
+		LocationListener locationListener = new LocationListener() {
+
+			@Override
+			public void onLocationChanged(Location arg0) {
+				Location loc = locationManager.getLastKnownLocation(provider);
+				if (loc != null) {
+					LoginActivity.db.insertLocation("androidTable", loc.getTime() + "", loc.getLatitude() + "", loc.getLongitude() + "");
+				}
+			}
+
+			@Override
+			public void onProviderDisabled(String provider) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onProviderEnabled(String provider) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onStatusChanged(String provider, int status,
+					Bundle extras) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		};
+		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+		
 		//itemizedoverlay.addOverlay(overlayitem);
 		mapOverlays.add(itemizedoverlay);
 		mapOverlays.add(POIs);
@@ -196,7 +219,7 @@ public class MapViewActivity extends MapActivity {
 					itemizedoverlay.addOverlay(overlayitem);
 
 					prePos = curPos;
-					LoginActivity.cserver.insertLocation(curDate.toString(), latD + "", lonD + "");
+					LoginActivity.db.insertLocation("cserverTable", curDate.toString(), latD + "", lonD + "");
 				}
 
 				tv.setText(curDate + "\n" + "Total Distance Traveled: " + totalDistance+ " meters");
@@ -226,7 +249,7 @@ public class MapViewActivity extends MapActivity {
 					e.printStackTrace();
 				}
 				
-				LoginActivity.cserver.close();
+				LoginActivity.db.close();
 				MapView mapView = (MapView) findViewById(R.id.mapview);
 				MapController mc = mapView.getController();
 				mc.animateTo(curPos);
