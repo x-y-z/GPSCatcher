@@ -6,8 +6,6 @@ import com.google.api.client.util.Key;
 
 
 public class PlacesList {
-	public PlacesList(){		
-	}
 
 	@Key
 	public String status;

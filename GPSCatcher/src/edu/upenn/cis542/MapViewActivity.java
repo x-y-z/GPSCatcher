@@ -44,6 +44,8 @@ public class MapViewActivity extends MapActivity {
 	private String port;
 	private GPSPoints POIs;
 	
+	public static GeoPoint phonePos;
+	
 	private GeoPoint prePos = null;
 	private double totalDistance = 0;
 	public LocationManager locationManager;
@@ -78,6 +80,10 @@ public class MapViewActivity extends MapActivity {
 
 		new GetArduinoPos().execute("");
 
+		itemizedoverlay.getMapView(mapView, POIs);
+		POIs.getMapView(mapView, null);
+		phonePos = new GeoPoint((int)(39.95*1E6), (int)(-75.20*1E6));
+		
 		locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 		provider = LocationManager.GPS_PROVIDER;
 		LocationListener locationListener = new LocationListener() {
@@ -222,39 +228,15 @@ public class MapViewActivity extends MapActivity {
 					LoginActivity.db.insertLocation("cserverTable", curDate.toString(), latD + "", lonD + "");
 				}
 
-				tv.setText(curDate + "\n" + "Total Distance Traveled: " + totalDistance+ " meters");
+				tv.setText(curPos + "\n" + "Total Distance Traveled: " + totalDistance+ " meters");
 				
-				//provide restaurant at curPos
-				PlacesSearch ps = new PlacesSearch();
-				try {
-					ps.performSearch((double)curPos.getLatitudeE6()/1E6, (double)curPos.getLongitudeE6()/1E6);
-					PlacesList res = ps.getPlaces();
-					
-					if (res != null)
-					{
-						String msg = "STATUS:" + res.status +", Find " + res.results.size() + " POIs";
-						Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
-						for (Place pl: res.results)
-						{
-							GeoPoint thisPos = pl.getGeo();
-							String thisName = "Name:" + pl.name;
-							String thisRating = "Rating is:" + pl.rating;
-							OverlayItem aPOI = new OverlayItem(thisPos, thisName, thisRating);
-							POIs.addOverlay(aPOI);
-						}
-						
-					}
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				LoginActivity.db.close();
-				MapView mapView = (MapView) findViewById(R.id.mapview);
-				MapController mc = mapView.getController();
-				mc.animateTo(curPos);
-				mc.setZoom(15);
-				mapView.invalidate();
+//				LoginActivity.cserver.close();
+//				MapView mapView = (MapView) findViewById(R.id.mapview);
+//				MapController mc = mapView.getController();
+//				mc.animateTo(curPos);
+//				mc.setZoom(15);
+//				mapView.invalidate();
+
 			}
 		}
 

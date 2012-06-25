@@ -19,5 +19,7 @@
     <string name="gpscheck">Check GPS Locations</string>
     <string name="phonecheck">Check Phone Locations</string>
     <string name="chase">Chase</string>
+    <string name="navito">Navi To</string>
+    <string name="nchase">Go and have some food</string>
     
 </resources>

@@ -10,9 +10,9 @@ public class DbCheckActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.dbcheck);
-		String locations = LoginActivity.cserver.getLocations();
-		TextView tv = (TextView)findViewById(R.id.db);
+		setContentView(R.layout.gpsdbcheck);
+		String locations = LoginActivity.db.getLocations("cserverTable");
+		TextView tv = (TextView)findViewById(R.id.gpsdb);
 		tv.setText("Longitude        " + "Latitude\n" + locations);
 	}
 	
