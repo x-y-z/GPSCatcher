@@ -59,7 +59,8 @@ public class GPSPoints extends ItemizedOverlay<OverlayItem> {
 		setLastFocusedIndex(-1);
 		populate();
 	}
-	public void clearAll(){
+
+	public void clearAll() {
 		mOverlays.clear();
 		setLastFocusedIndex(-1);
 		populate();
@@ -92,7 +93,7 @@ public class GPSPoints extends ItemizedOverlay<OverlayItem> {
 							// clicked
 							public void onClick(DialogInterface dialog, int id) {
 								POIs.clearAll();
-								
+
 								Toast.makeText(
 										mContext,
 										"Arduino is at:"
@@ -125,17 +126,18 @@ public class GPSPoints extends ItemizedOverlay<OverlayItem> {
 								// provide restaurant at curPos
 								PlacesSearch ps = new PlacesSearch();
 								try {
-									ps.performSearch(
-											(double) item.getPoint().getLatitudeE6() / 1E6,
-											(double) item.getPoint().getLongitudeE6() / 1E6);
+									ps.performSearch((double) item.getPoint()
+											.getLatitudeE6() / 1E6,
+											(double) item.getPoint()
+													.getLongitudeE6() / 1E6);
 									PlacesList res = ps.getPlaces();
 
 									if (res != null) {
 										String msg = "STATUS:" + res.status
 												+ ", Find "
 												+ res.results.size() + " POIs";
-										Toast.makeText(mContext,
-												msg, Toast.LENGTH_LONG).show();
+										Toast.makeText(mContext, msg,
+												Toast.LENGTH_LONG).show();
 										POIs.clearAll();
 										for (Place pl : res.results) {
 											GeoPoint thisPos = pl.getGeo();
@@ -155,7 +157,7 @@ public class GPSPoints extends ItemizedOverlay<OverlayItem> {
 								}
 							}
 						});
-				
+
 				dialog.show();
 			} else {
 				AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
