@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,6 +29,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -85,12 +87,13 @@ public class MapViewActivity extends MapActivity {
 		phonePos = new GeoPoint((int)(39.95*1E6), (int)(-75.20*1E6));
 		
 		locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-		provider = LocationManager.GPS_PROVIDER;
+		//provider = LocationManager.GPS_PROVIDER;
 		LocationListener locationListener = new LocationListener() {
 
 			@Override
 			public void onLocationChanged(Location arg0) {
-				Location loc = locationManager.getLastKnownLocation(provider);
+				Location loc = arg0;
+				Toast.makeText(getApplicationContext(), "gps loc:"+loc.getLatitude() +", "+ loc.getLongitude(), Toast.LENGTH_LONG).show();
 				if (loc != null) {
 					LoginActivity.db.insertLocation("androidTable", loc.getTime() + "", loc.getLatitude() + "", loc.getLongitude() + "");
 				}
@@ -116,7 +119,7 @@ public class MapViewActivity extends MapActivity {
 			}
 			
 		};
-		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 		
 		//itemizedoverlay.addOverlay(overlayitem);
 		mapOverlays.add(itemizedoverlay);
@@ -228,7 +231,8 @@ public class MapViewActivity extends MapActivity {
 					LoginActivity.db.insertLocation("cserverTable", curDate.toString(), latD + "", lonD + "");
 				}
 
-				tv.setText(curPos + "\n" + "Total Distance Traveled: " + totalDistance+ " meters");
+				tv.setText(curPos.toString() + "\n" + "Total Distance Traveled:" + 
+						new DecimalFormat("#.##").format(totalDistance)+ " meters");
 				
 //				LoginActivity.cserver.close();
 //				MapView mapView = (MapView) findViewById(R.id.mapview);
@@ -246,6 +250,10 @@ public class MapViewActivity extends MapActivity {
 			return results[results.length - 1];			
 		}
 
+	}
+	
+	public void onRefreshClick(View v){
+		
 	}
 
 }

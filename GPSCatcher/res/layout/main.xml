@@ -5,11 +5,29 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/hello" 
-        android:id="@+id/msg" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hello" 
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/refresh" 
+            android:onClick="onRefreshClick"
+            android:layout_weight="1"
+            android:padding="4dip"/>
+
+    </LinearLayout>
+
 <com.google.android.maps.MapView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/mapview"
@@ -18,4 +36,5 @@
     android:clickable="true"
     android:apiKey="0FpZ9lwtxH1-g8vHYaiRcfj6I15O0tbFRdN5fcQ"
 />
+
 </LinearLayout> 

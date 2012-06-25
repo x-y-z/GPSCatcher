@@ -21,5 +21,6 @@
     <string name="chase">Chase</string>
     <string name="navito">Navi To</string>
     <string name="nchase">Go and have some food</string>
+    <string name="refresh">R</string>
     
 </resources>
