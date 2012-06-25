@@ -18,5 +18,7 @@
     <string name="defaultPort">12345</string>
     <string name="dbcheck">Check GPS Locations</string>
     <string name="chase">Chase</string>
+    <string name="navito">Navi To</string>
+    <string name="nchase">Go and have some food</string>
     
 </resources>

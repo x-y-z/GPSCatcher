@@ -27,19 +27,19 @@ public class Navigation {
 	private Routing navSet;
 	private int color = Color.parseColor("#add331");
 
-	public void performSearch(double slat, double slng, double dlat, double dlng)
+	public void performSearch(GeoPoint saddr, GeoPoint daddr)
 			throws Exception {
 
 		StringBuilder urlString = new StringBuilder();
 		urlString.append("http://maps.google.com/maps?f=d&hl=en");
 		urlString.append("&saddr=");// from
-		urlString.append(slat);
+		urlString.append((double)saddr.getLatitudeE6()/1E6);
 		urlString.append(",");
-		urlString.append(slng);
+		urlString.append((double)saddr.getLongitudeE6()/1E6);
 		urlString.append("&daddr=");// to
-		urlString.append(dlat);
+		urlString.append((double)daddr.getLatitudeE6()/1E6);
 		urlString.append(",");
-		urlString.append(dlng);
+		urlString.append((double)daddr.getLongitudeE6()/1E6);
 		urlString.append("&ie=UTF8&0&om=0&output=kml");
 
 		try {
@@ -172,6 +172,7 @@ public class Navigation {
 			}
 		}
 		mMapView.setEnabled(true);
+		mMapView.invalidate();
 	}
 
 }

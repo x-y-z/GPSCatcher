@@ -41,6 +41,8 @@ public class MapViewActivity extends MapActivity {
 	private String port;
 	private GPSPoints POIs;
 	
+	public static GeoPoint phonePos;
+	
 	private GeoPoint prePos = null;
 	private double totalDistance = 0;
 
@@ -77,21 +79,24 @@ public class MapViewActivity extends MapActivity {
 		//http://developmentality.wordpress.com/2009/10/16/android-overlayitems
 		//overlayitem.setMarker(red_dot);
 
+		itemizedoverlay.getMapView(mapView, POIs);
+		POIs.getMapView(mapView, null);
+		phonePos = new GeoPoint((int)(39.95*1E6), (int)(-75.20*1E6));
 		
-		Navigation ng = new Navigation();
-		try {
-			ng.performSearch(+39.95, -75.20, +39.95 + 0.1, -75.20+0.1);
-			ng.drawPath(mapView);
-			
-			MapController mc = mapView.getController();
-			mc.animateTo(new GeoPoint((int)(39.95*1E6), (int)(-75.20*1E6)));
-			mc.setZoom(15);
-			mapView.invalidate();
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		Navigation ng = new Navigation();
+//		try {
+//			ng.performSearch(+39.95, -75.20, +39.95 + 0.1, -75.20+0.1);
+//			ng.drawPath(mapView);
+//			
+//			MapController mc = mapView.getController();
+//			mc.animateTo(new GeoPoint((int)(39.95*1E6), (int)(-75.20*1E6)));
+//			mc.setZoom(15);
+//			mapView.invalidate();
+//			
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 
 		new GetArduinoPos().execute("");
@@ -208,33 +213,33 @@ public class MapViewActivity extends MapActivity {
 
 				tv.setText(curPos + "\n" + "Total Distance Traveled: " + totalDistance+ " meters");
 				
-				//provide restaurant at curPos
-				PlacesSearch ps = new PlacesSearch();
-				try {
-					ps.performSearch((double)curPos.getLatitudeE6()/1E6, (double)curPos.getLongitudeE6()/1E6);
-					PlacesList res = ps.getPlaces();
-					
-					if (res != null)
-					{
-						String msg = "STATUS:" + res.status +", Find " + res.results.size() + " POIs";
-						Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
-						for (Place pl: res.results)
-						{
-							GeoPoint thisPos = pl.getGeo();
-							String thisName = "Name:" + pl.name;
-							String thisRating = "Rating is:" + pl.rating;
-							OverlayItem aPOI = new OverlayItem(thisPos, thisName, thisRating);
-							POIs.addOverlay(aPOI);
-						}
-						
-					}
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+//				//provide restaurant at curPos
+//				PlacesSearch ps = new PlacesSearch();
+//				try {
+//					ps.performSearch((double)curPos.getLatitudeE6()/1E6, (double)curPos.getLongitudeE6()/1E6);
+//					PlacesList res = ps.getPlaces();
+//					
+//					if (res != null)
+//					{
+//						String msg = "STATUS:" + res.status +", Find " + res.results.size() + " POIs";
+//						Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+//						for (Place pl: res.results)
+//						{
+//							GeoPoint thisPos = pl.getGeo();
+//							String thisName = "Name:" + pl.name;
+//							String thisRating = "Rating is:" + pl.rating;
+//							OverlayItem aPOI = new OverlayItem(thisPos, thisName, thisRating);
+//							POIs.addOverlay(aPOI);
+//						}
+//						
+//					}
+//				} catch (Exception e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 				
-				LoginActivity.cserver.close();
-				MapView mapView = (MapView) findViewById(R.id.mapview);
+//				LoginActivity.cserver.close();
+//				MapView mapView = (MapView) findViewById(R.id.mapview);
 //				MapController mc = mapView.getController();
 //				mc.animateTo(curPos);
 //				mc.setZoom(15);
