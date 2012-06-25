@@ -78,13 +78,20 @@ public class MapViewActivity extends MapActivity {
 		//overlayitem.setMarker(red_dot);
 
 		
-		/*Navigation ng = new Navigation();
+		Navigation ng = new Navigation();
 		try {
-			ng.performSearch(19.24, -99.12);
+			ng.performSearch(+39.95, -75.20, +39.95 + 0.1, -75.20+0.1);
+			ng.drawPath(mapView);
+			
+			MapController mc = mapView.getController();
+			mc.animateTo(new GeoPoint((int)(39.95*1E6), (int)(-75.20*1E6)));
+			mc.setZoom(15);
+			mapView.invalidate();
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
 		
 
 		new GetArduinoPos().execute("");
@@ -199,7 +206,7 @@ public class MapViewActivity extends MapActivity {
 					LoginActivity.cserver.insertLocation(curDate.toString(), latD + "", lonD + "");
 				}
 
-				tv.setText(curDate + "\n" + "Total Distance Traveled: " + totalDistance+ " meters");
+				tv.setText(curPos + "\n" + "Total Distance Traveled: " + totalDistance+ " meters");
 				
 				//provide restaurant at curPos
 				PlacesSearch ps = new PlacesSearch();
@@ -228,10 +235,10 @@ public class MapViewActivity extends MapActivity {
 				
 				LoginActivity.cserver.close();
 				MapView mapView = (MapView) findViewById(R.id.mapview);
-				MapController mc = mapView.getController();
-				mc.animateTo(curPos);
-				mc.setZoom(15);
-				mapView.invalidate();
+//				MapController mc = mapView.getController();
+//				mc.animateTo(curPos);
+//				mc.setZoom(15);
+//				mapView.invalidate();
 			}
 		}
 

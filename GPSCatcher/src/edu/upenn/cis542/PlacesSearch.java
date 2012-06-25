@@ -32,7 +32,7 @@ public class PlacesSearch {
 	
 	public void performSearch(double lat, double lng) throws Exception {
 		try {
-			System.out.println("Perform Search ....");
+			System.out.println("POI Perform Search ....");
 			System.out.println("-------------------");
 			HttpRequestFactory httpRequestFactory = createRequestFactory(transport);
 			HttpRequest request = httpRequestFactory
