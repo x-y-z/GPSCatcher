@@ -39,6 +39,7 @@ public class MapViewActivity extends MapActivity {
 	public static String frequency = "";
 	private String ipAddr;
 	private String port;
+	private GPSPoints POIs;
 	
 	private GeoPoint prePos = null;
 	private double totalDistance = 0;
@@ -62,29 +63,35 @@ public class MapViewActivity extends MapActivity {
 
 		Drawable red_dot = getResources().getDrawable(R.drawable.red_dot);		
 		red_dot.setBounds(0, 0, red_dot.getIntrinsicWidth()/10, red_dot.getIntrinsicHeight()/10);
+		
+		Drawable star = getResources().getDrawable(R.drawable.star);
+		star.setBounds(0, 0, star.getIntrinsicWidth()/5, star.getIntrinsicHeight()/5);
+		
 		Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
 		itemizedoverlay = new GPSPoints(drawable, red_dot, this);
+		POIs = new GPSPoints(star, this);
 
-		GeoPoint point = new GeoPoint(19240000,-99120000);
-		OverlayItem overlayitem = new OverlayItem(point, "Hola, Mundo!", "I'm in Mexico City!");
+		//GeoPoint point = new GeoPoint(19240000,-99120000);
+		//OverlayItem overlayitem = new OverlayItem(point, "Hola, Mundo!", "I'm in Mexico City!");
 
 		//http://developmentality.wordpress.com/2009/10/16/android-overlayitems
-		overlayitem.setMarker(red_dot);
+		//overlayitem.setMarker(red_dot);
 
 		
-		Navigation ng = new Navigation();
+		/*Navigation ng = new Navigation();
 		try {
 			ng.performSearch(19.24, -99.12);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		
 
 		new GetArduinoPos().execute("");
 
-		itemizedoverlay.addOverlay(overlayitem);
+		//itemizedoverlay.addOverlay(overlayitem);
 		mapOverlays.add(itemizedoverlay);
+		mapOverlays.add(POIs);
 	}
 
 	@Override
@@ -181,6 +188,7 @@ public class MapViewActivity extends MapActivity {
 
 					if (prePos != null){
 						mapOverlays.add(new LineOnMap(prePos, curPos, project));
+						//itemizedoverlay.addOverlay(new LineOnMap(prePos, curPos, project));
 						totalDistance += CalculateDistance(prePos, curPos);
 					}
 
@@ -203,6 +211,15 @@ public class MapViewActivity extends MapActivity {
 					{
 						String msg = "STATUS:" + res.status +", Find " + res.results.size() + " POIs";
 						Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+						for (Place pl: res.results)
+						{
+							GeoPoint thisPos = pl.getGeo();
+							String thisName = "Name:" + pl.name;
+							String thisRating = "Rating is:" + pl.rating;
+							OverlayItem aPOI = new OverlayItem(thisPos, thisName, thisRating);
+							POIs.addOverlay(aPOI);
+						}
+						
 					}
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -213,7 +230,7 @@ public class MapViewActivity extends MapActivity {
 				MapView mapView = (MapView) findViewById(R.id.mapview);
 				MapController mc = mapView.getController();
 				mc.animateTo(curPos);
-				mc.setZoom(30);
+				mc.setZoom(15);
 				mapView.invalidate();
 			}
 		}

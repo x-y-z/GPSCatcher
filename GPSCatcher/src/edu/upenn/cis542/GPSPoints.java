@@ -27,8 +27,14 @@ public class GPSPoints extends ItemizedOverlay<OverlayItem> {
 		mContext = context;
 	}
 
+	public GPSPoints(Drawable defaultMarker, Context context) {
+		super(defaultMarker);
+		histMarker = null;
+		mContext = context;
+	}
+
 	public void addOverlay(OverlayItem overlay) {
-		if (!mOverlays.isEmpty()) {
+		if (!mOverlays.isEmpty() && histMarker != null) {
 			mOverlays.get(mOverlays.size() - 1).setMarker(histMarker);
 		}
 		mOverlays.add(overlay);
@@ -52,19 +58,30 @@ public class GPSPoints extends ItemizedOverlay<OverlayItem> {
 	@Override
 	protected boolean onTap(int index) {
 		OverlayItem item = mOverlays.get(index);
-		if (index == mOverlays.size() - 1) {
-			AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
-			dialog.setTitle(item.getTitle());
-			dialog.setMessage(item.getSnippet());
-			dialog.setPositiveButton(R.string.chase,
-					new DialogInterface.OnClickListener() {
-						// This is the method to call when the button is clicked
-						public void onClick(DialogInterface dialog, int id) {
-							
-						}
-					});
-			dialog.show();
-		} else {
+		if (histMarker != null) {
+
+			if (index == mOverlays.size() - 1) {
+				AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
+				dialog.setTitle(item.getTitle());
+				dialog.setMessage(item.getSnippet());
+				dialog.setPositiveButton(R.string.chase,
+						new DialogInterface.OnClickListener() {
+							// This is the method to call when the button is
+							// clicked
+							public void onClick(DialogInterface dialog, int id) {
+
+							}
+						});
+				dialog.show();
+			} else {
+				AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
+				dialog.setTitle(item.getTitle());
+				dialog.setMessage(item.getSnippet());
+				dialog.show();
+			}
+
+		}
+		else{
 			AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
 			dialog.setTitle(item.getTitle());
 			dialog.setMessage(item.getSnippet());

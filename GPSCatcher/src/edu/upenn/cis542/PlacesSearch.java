@@ -46,7 +46,7 @@ public class PlacesSearch {
 			
 			pl = request.execute().parseAs(PlacesList.class);
 			
-			while(pl.results.size() < 5){
+			while(pl.results.size() < 3){
 				radius *= 2;
 				request.getUrl().put("radius", radius);
 				
