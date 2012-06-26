@@ -41,8 +41,10 @@ public class DbTableCreator extends SQLiteOpenHelper {
 	}
 
 	public void clear() {
-		if (getWritableDatabase() != null)
-			getWritableDatabase().execSQL("DELETE FROM " + DATABASE_NAME);
+		if (getWritableDatabase() != null) {
+			getWritableDatabase().delete("cserverTable", null, null);
+			getWritableDatabase().delete("androidTable", null, null);
+		}
 	}
 	
 	public void close() {

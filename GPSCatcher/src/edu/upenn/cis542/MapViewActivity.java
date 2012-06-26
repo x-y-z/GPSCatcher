@@ -54,6 +54,7 @@ public class MapViewActivity extends MapActivity {
 
 	public static GeoPoint phonePos = null;
 	private int idle = 1000;
+	private int slowDown = 0;
 
 	private int inquiry = 1;
 
@@ -108,6 +109,7 @@ public class MapViewActivity extends MapActivity {
 
 		itemizedoverlay.getMapView(mapView, POIs);
 		POIs.getMapView(mapView, null);
+
 		// phonePos = new GeoPoint((int) (39.95 * 1E6), (int) (-75.20 * 1E6));
 
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -164,33 +166,36 @@ public class MapViewActivity extends MapActivity {
 					LoginActivity.db.insertLocation("androidTable",
 							loc.getTime() + "", loc.getLatitude() + "",
 							loc.getLongitude() + "");
+
 				}
 			}
 
 			@Override
 			public void onProviderDisabled(String provider) {
-				// TODO Auto-generated method stub
+
+				Toast.makeText(getApplicationContext(),
+						"GPS provider is disabled.", Toast.LENGTH_LONG).show();
 
 			}
 
 			@Override
 			public void onProviderEnabled(String provider) {
-				// TODO Auto-generated method stub
+
+				Toast.makeText(getApplicationContext(),
+						"GPS provider is enabled.", Toast.LENGTH_LONG).show();
 
 			}
 
 			@Override
 			public void onStatusChanged(String provider, int status,
 					Bundle extras) {
-				// TODO Auto-generated method stub
 
 			}
-
 		};
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
-				0, locationListener);
+		// Currently defaults to 10 ms and 0.1 meter changes
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+				(long) 10, (float) 0.1, locationListener);
 
-		// itemizedoverlay.addOverlay(overlayitem);
 		mapOverlays.add(itemizedoverlay);
 		mapOverlays.add(POIs);
 		mapOverlays.add(phones);
@@ -304,7 +309,8 @@ public class MapViewActivity extends MapActivity {
 
 					if (prePos != null) {
 						double thisJump = CalculateDistance(prePos, curPos);
-						if (thisJump > 10) {							
+						if (thisJump > 10) {
+							slowDown = 0;
 							mapOverlays.add(new LineOnMap(prePos, curPos,
 									project));
 							// itemizedoverlay.addOverlay(new LineOnMap(prePos,
@@ -316,9 +322,8 @@ public class MapViewActivity extends MapActivity {
 							mapView.invalidate();
 							LoginActivity.db.insertLocation("cserverTable",
 									curDate.toString(), latD + "", lonD + "");
-							
-							if (frequency != 0)
-							{
+
+							if (frequency != 0) {
 								frequency = 0;
 								Toast.makeText(
 										getApplicationContext(),
@@ -326,14 +331,17 @@ public class MapViewActivity extends MapActivity {
 										Toast.LENGTH_LONG).show();
 							}
 						} else {
-							frequency += 1000;
-							if (frequency > 5000)
-								frequency = 5000;
+							slowDown++;
+							if (slowDown > 5) {
+								frequency += 1000;
+								if (frequency > 5000)
+									frequency = 5000;
 
-							Toast.makeText(
-									getApplicationContext(),
-									"Arduino is not moving fast. Slow down GPS inquiry frequency!",
-									Toast.LENGTH_LONG).show();
+								Toast.makeText(
+										getApplicationContext(),
+										"Arduino is not moving fast. Slow down GPS inquiry frequency!",
+										Toast.LENGTH_LONG).show();
+							}
 						}
 					} else {
 						OverlayItem overlayitem = new OverlayItem(curPos,
@@ -364,7 +372,6 @@ public class MapViewActivity extends MapActivity {
 				try {
 					Thread.sleep(idle);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
@@ -431,5 +438,6 @@ public class MapViewActivity extends MapActivity {
 		locationManager.removeUpdates(locationListener);
 		inquiry = 0;
 		finish();
+
 	}
 }
