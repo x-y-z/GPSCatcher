@@ -15,8 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10" 
-        android:hint="@string/defaultIP">
-
+        android:hint="@string/defaultIP" >
         <requestFocus />
     </EditText>
 
@@ -31,7 +30,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10" 
-        android:hint="@string/defaultPort"/>
+        android:hint="@string/defaultPort"
+        android:inputType="numberDecimal" />
 
     <Button
         android:id="@+id/button1"

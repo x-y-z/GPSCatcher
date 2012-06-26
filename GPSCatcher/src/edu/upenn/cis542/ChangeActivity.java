@@ -12,6 +12,10 @@ public class ChangeActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.change);
+		EditText typingDirections = (EditText)findViewById(R.id.typing_directions);
+		typingDirections.setText(MapViewActivity.num_directions + "");
+		EditText typingFrequency = (EditText)findViewById(R.id.typing_freq);
+		typingFrequency.setText(MapViewActivity.frequency + "");
 	}
 
 	/**
@@ -26,8 +30,8 @@ public class ChangeActivity extends Activity {
 		EditText typingFrequency = (EditText)findViewById(R.id.typing_freq);
 		String freq = typingFrequency.getText().toString();
 		
-		MapViewActivity.num_directions = directions;
-		MapViewActivity.frequency = freq;
+		MapViewActivity.num_directions = Integer.parseInt(directions);
+		MapViewActivity.frequency = Integer.parseInt(freq);
 		
 		finish();
 	}
