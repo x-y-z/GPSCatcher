@@ -136,7 +136,7 @@ public class MapViewActivity extends MapActivity {
 				PrintWriter out = new PrintWriter(s.getOutputStream(), true);
 
 				if(num_directions.equals("") || frequency.equals("")) {
-					out.println("5,0.");
+					out.println("1,0.");
 				} else {
 					out.println(num_directions + "," + frequency + ".");
 				}
