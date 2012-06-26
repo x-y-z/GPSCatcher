@@ -15,7 +15,6 @@ import java.util.TimeZone;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
-import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
@@ -89,39 +88,33 @@ public class MapViewActivity extends MapActivity {
 		locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 		//provider = LocationManager.GPS_PROVIDER;
 		LocationListener locationListener = new LocationListener() {
-
 			@Override
 			public void onLocationChanged(Location arg0) {
 				Location loc = arg0;
-				Toast.makeText(getApplicationContext(), "gps loc:"+loc.getLatitude() +", "+ loc.getLongitude(), Toast.LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(), "Android Location: " + round(loc.getLatitude()) + ", " + round(loc.getLongitude()), Toast.LENGTH_LONG).show();
 				if (loc != null) {
-					LoginActivity.db.insertLocation("androidTable", loc.getTime() + "", loc.getLatitude() + "", loc.getLongitude() + "");
+					LoginActivity.db.insertLocation("androidTable", loc.getTime() + "", round(loc.getLatitude()), round(loc.getLongitude()));
 				}
 			}
 
 			@Override
 			public void onProviderDisabled(String provider) {
-				// TODO Auto-generated method stub
-				
+				Toast.makeText(getApplicationContext(), "GPS provider is disabled.", Toast.LENGTH_LONG).show();
 			}
 
 			@Override
 			public void onProviderEnabled(String provider) {
-				// TODO Auto-generated method stub
-				
+				Toast.makeText(getApplicationContext(), "GPS provider is enabled.", Toast.LENGTH_LONG).show();
 			}
 
 			@Override
-			public void onStatusChanged(String provider, int status,
-					Bundle extras) {
+			public void onStatusChanged(String provider, int status, Bundle extras) {
 				// TODO Auto-generated method stub
-				
 			}
-			
 		};
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+		// Currently defaults to 10 ms and 0.1 meter changes
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, (long)10, (float)0.1, locationListener);
 		
-		//itemizedoverlay.addOverlay(overlayitem);
 		mapOverlays.add(itemizedoverlay);
 		mapOverlays.add(POIs);
 	}
@@ -228,13 +221,13 @@ public class MapViewActivity extends MapActivity {
 					itemizedoverlay.addOverlay(overlayitem);
 
 					prePos = curPos;
-					LoginActivity.db.insertLocation("cserverTable", curDate.toString(), latD + "", lonD + "");
+					LoginActivity.db.insertLocation("cserverTable", curDate.toString(), round(latD), round(lonD));
 				}
 
-				tv.setText(curPos.toString() + "\n" + "Total Distance Traveled:" + 
-						new DecimalFormat("#.##").format(totalDistance)+ " meters");
+				tv.setText(curPos.toString() + "\n" + "Total Distance Traveled: " + 
+						round(totalDistance) + " meters");
 				
-//				LoginActivity.cserver.close();
+				LoginActivity.db.close();
 //				MapView mapView = (MapView) findViewById(R.id.mapview);
 //				MapController mc = mapView.getController();
 //				mc.animateTo(curPos);
@@ -252,8 +245,16 @@ public class MapViewActivity extends MapActivity {
 
 	}
 	
-	public void onRefreshClick(View v){
+	public void onRefreshClick(View v) {
 		
 	}
-
+	
+	/**
+	 * Rounds numbers to two decimal places
+	 * @param number to round
+	 * @return String representing longitude/latitude
+	 */
+	public String round(double number) {
+		return new DecimalFormat("#.##").format(number);
+	}
 }
