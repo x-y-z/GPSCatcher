@@ -256,6 +256,7 @@ public class MapViewActivity extends MapActivity {
 				tv.setText(result);
 				return;
 			} else {
+				num_directions = 1;
 				String[] array = result.split("\n");
 				int entryCnt = Integer.parseInt(array[0]) * 4;
 
