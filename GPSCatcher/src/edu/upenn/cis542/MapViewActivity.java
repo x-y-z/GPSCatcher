@@ -1,3 +1,10 @@
+/*
+ * Chasing game activity
+ * display Arduino location, Phone location,
+ * POIs around Arduino, navigation
+ * 
+ */
+
 package edu.upenn.cis542;
 
 import java.io.IOException;
@@ -39,20 +46,23 @@ import android.widget.Toast;
 
 public class MapViewActivity extends MapActivity {
 	private TextView tv;
-	private Date curDate;
+
 	/** current date from arduino */
-	private GeoPoint curPos;
+	private Date curDate;
 	/** current gps location from arduino */
+	private GeoPoint curPos;
+
 	private GPSPoints itemizedoverlay;
 	private List<Overlay> mapOverlays;
 	private Projection project;
 	private MapView mapView;
 	private Context thisContext;
 
-	public static int num_directions = -1;
 	/** number of gps location to be read */
-	public static int frequency = -1;
+	public static int num_directions = -1;
 	/** interval between two reads */
+	public static int frequency = -1;
+
 	private String ipAddr;
 	private String port;
 	private GPSPoints POIs;
@@ -125,8 +135,6 @@ public class MapViewActivity extends MapActivity {
 		itemizedoverlay.getMapView(mapView, POIs);
 		POIs.getMapView(mapView, null);
 
-		// phonePos = new GeoPoint((int) (39.95 * 1E6), (int) (-75.20 * 1E6));
-
 		// register location manager
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		provider = LocationManager.GPS_PROVIDER;
@@ -138,7 +146,6 @@ public class MapViewActivity extends MapActivity {
 			OverlayItem aPhone = new OverlayItem(phonePos, "I",
 					lastLoc.getTime() + "");
 			phones.addOverlay(aPhone);
-			// phoneToArd = CalculateDistance(phonePos, curPos);
 		}
 
 		locationListener = new LocationListener() {
@@ -413,7 +420,7 @@ public class MapViewActivity extends MapActivity {
 
 				}
 
-				//show current information
+				// show current information
 				tv.setText("Arduino is at:(" + (double) curPos.getLatitudeE6()
 						/ 1E6 + "," + (double) curPos.getLongitudeE6() / 1E6
 						+ ")\n" + "Dist. behind:"
@@ -422,7 +429,7 @@ public class MapViewActivity extends MapActivity {
 						+ new DecimalFormat("#.##").format(totalDistance)
 						+ " m.\n");
 
-				//idle for a while
+				// idle for a while
 				try {
 					Thread.sleep(idle);
 				} catch (InterruptedException e) {
