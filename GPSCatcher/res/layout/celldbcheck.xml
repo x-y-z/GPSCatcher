@@ -12,9 +12,12 @@
         android:textColor="#66FF33" >
     </TextView>
 
+    <!-- http://stackoverflow.com/questions/1748977/making-textview-scrollable-in-android -->
     <TextView
         android:id="@+id/celldb"
         android:layout_width="fill_parent"
+        android:maxLines = "25"
+		android:scrollbars = "vertical"
         android:layout_height="0dip"
         android:layout_weight="0.95" >
     </TextView>

@@ -82,7 +82,7 @@ public class DbTableCreator extends SQLiteOpenHelper {
 		int columnLat = c.getColumnIndex("latitude");
 		String returnValue = "";
 		while (c.moveToNext()) {
-			returnValue += c.getString(columnLong) + " " + c.getString(columnLat) + "\n";
+			returnValue += c.getString(columnLong) + ", " + c.getString(columnLat) + "\n";
 		}
 		c.close();
 		return returnValue;

@@ -2,6 +2,7 @@ package edu.upenn.cis542;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.TextView;
 
@@ -14,7 +15,8 @@ public class CellCheckActivity extends Activity {
 		setContentView(R.layout.celldbcheck);
 		String locations = LoginActivity.db.getLocations("androidTable");
 		TextView tv = (TextView)findViewById(R.id.celldb);
-		tv.setText("Longitude        " + "Latitude\n" + locations);
+		tv.setMovementMethod(new ScrollingMovementMethod());
+		tv.setText("Longitude, Latitude\n" + locations);
 	}
 
 	/**
