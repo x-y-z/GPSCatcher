@@ -2,6 +2,7 @@ package edu.upenn.cis542;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 public class GPSCheckActivity extends Activity {
@@ -17,4 +18,12 @@ public class GPSCheckActivity extends Activity {
 		tv.setText("Total distance in 24hr:\n"+ td +"\nLongitude        " + "Latitude\n" + locations);
 	}
 	
+	/**
+	 * Called when user clicks on the Back button after typing.
+	 * 
+	 * @param view
+	 */
+	public void onBackClick(View view) {
+		finish();
+	}
 }

@@ -2,6 +2,7 @@ package edu.upenn.cis542;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 public class CellCheckActivity extends Activity {
@@ -15,5 +16,13 @@ public class CellCheckActivity extends Activity {
 		TextView tv = (TextView)findViewById(R.id.celldb);
 		tv.setText("Longitude        " + "Latitude\n" + locations);
 	}
-	
+
+	/**
+	 * Called when user clicks on the Back button after typing.
+	 * 
+	 * @param view
+	 */
+	public void onBackClick(View view) {
+		finish();
+	}
 }

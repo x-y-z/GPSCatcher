@@ -4,9 +4,25 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
     
-<TextView android:layout_height="fill_parent" 
+<TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/gpstitle"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#66FF33" >
+    </TextView>
+    
+<TextView 
     android:layout_width="fill_parent" 
+    android:layout_height="0dip"
+    android:layout_weight="0.95"
     android:id="@+id/gpsdb" >
     </TextView>
+    
+    <Button
+        android:id="@+id/back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/back" />
     
 </LinearLayout>

@@ -24,6 +24,8 @@
     <string name="refresh">Stop</string>
     <string name="phone">Phone</string>
     <string name="arduino">Arduino</string>
+    <string name="celltitle">Phone Location Database</string>
+    <string name="gpstitle">Arduino Location Database</string>
     <string name="ok">OK</string>
     
 </resources>

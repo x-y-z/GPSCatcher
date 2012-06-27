@@ -18,7 +18,7 @@ public class ChangeActivity extends Activity {
 	}
 
 	/**
-	 * Called when user clicks on the Submit button after typing.
+	 * Called when user clicks on the Back button after typing.
 	 * 
 	 * @param view
 	 */
