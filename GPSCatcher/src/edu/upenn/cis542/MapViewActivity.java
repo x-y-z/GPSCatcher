@@ -22,7 +22,9 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 import com.google.android.maps.Projection;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -43,6 +45,7 @@ public class MapViewActivity extends MapActivity {
 	private List<Overlay> mapOverlays;
 	private Projection project;
 	private MapView mapView;
+	private Context thisContext;
 
 	public static int num_directions = -1;
 	public static int frequency = -1;
@@ -69,6 +72,9 @@ public class MapViewActivity extends MapActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		
+		thisContext = this;
+		
 		Intent i = getIntent();
 		ipAddr = i.getStringExtra("IP_ADDR");
 		port = i.getStringExtra("PORT_NUM");
@@ -137,11 +143,22 @@ public class MapViewActivity extends MapActivity {
 				if (curPos != null)
 					phoneToArd = CalculateDistance(phoneCurPos, curPos);
 
-				if (phoneToArd < 20) {
-					Toast.makeText(getApplicationContext(),
-							"You have caught Arduino!\n You win!",
-							Toast.LENGTH_LONG).show();
-					onBackPressed();
+				if (phoneToArd < 70) {
+					AlertDialog.Builder dialog = new AlertDialog.Builder(thisContext
+							);
+					dialog.setTitle("Win!");
+					dialog.setMessage("You have caught Arduino!\nYou win!");
+					dialog.setPositiveButton(R.string.ok,
+							new DialogInterface.OnClickListener() {
+								// This is the method to call when the button is
+								// clicked
+								public void onClick(DialogInterface dialog,
+										int id) {
+									onBackPressed();
+								}
+							});
+					dialog.show();
+					
 				}
 
 				if (phonePos == null)
@@ -269,6 +286,14 @@ public class MapViewActivity extends MapActivity {
 					} catch (ParseException e) {
 						e.printStackTrace();
 					}
+
+					Date phoneDate = new Date();
+					if (Math.abs(phoneDate.getTime() - curDate.getTime()) > 10) {
+						Toast.makeText(getApplicationContext(),
+								"Arduino GPS Location is out of date!",
+								Toast.LENGTH_SHORT).show();
+					}
+
 					String la = new String(array[i + 3]);
 					String lo = new String(array[i + 4]);
 					la = la.replaceAll("\\s", "");
@@ -329,7 +354,7 @@ public class MapViewActivity extends MapActivity {
 								Toast.makeText(
 										getApplicationContext(),
 										"Arduino is moving fast. Speed up GPS inquiry frequency!",
-										Toast.LENGTH_LONG).show();
+										Toast.LENGTH_SHORT).show();
 							}
 						} else {
 							slowDown++;
@@ -341,7 +366,7 @@ public class MapViewActivity extends MapActivity {
 								Toast.makeText(
 										getApplicationContext(),
 										"Arduino is not moving fast. Slow down GPS inquiry frequency!",
-										Toast.LENGTH_LONG).show();
+										Toast.LENGTH_SHORT).show();
 							}
 						}
 					} else {
@@ -356,8 +381,9 @@ public class MapViewActivity extends MapActivity {
 
 				}
 
-				tv.setText("Arduino is at:" + curPos.toString() + "\n"
-						+ "Dist. behind:"
+				tv.setText("Arduino is at:(" + (double) curPos.getLatitudeE6()
+						/ 1E6 + "," + (double) curPos.getLongitudeE6() / 1E6
+						+ ")\n" + "Dist. behind:"
 						+ new DecimalFormat("#.##").format(phoneToArd) + "m.\n"
 						+ "Arduino has traveled:"
 						+ new DecimalFormat("#.##").format(totalDistance)

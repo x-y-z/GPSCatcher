@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 public class LoginActivity extends Activity {
 	public static DbTableCreator db;
+	private BroadcastReceiver br;
 	
 	public void onCreate(Bundle b){
         super.onCreate(b);
@@ -83,12 +84,22 @@ public class LoginActivity extends Activity {
 		startActivity(i);
 	}
 
+	
+	public void onBackPressed(){
+		unregisterReceiver(br);
+		if (db != null)
+			db.close();
+		finish();
+	}
 	public void quitClick(View view) {
+		unregisterReceiver(br);
+		if (db != null)
+			db.close();
 		finish();
 	}
 	
 	private void registerBatteryListener() {
-		BroadcastReceiver br = new BroadcastReceiver() {
+		br = new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context arg0, Intent arg1) {
 				int level = arg1.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
