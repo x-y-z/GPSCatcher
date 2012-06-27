@@ -7,32 +7,26 @@
 <TextView  
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content" 
-    android:text="@string/num_directions"
+    android:text="@string/settings"
     />
-    
-<EditText android:layout_height="wrap_content" 
-    android:layout_width="fill_parent" 
-    android:id="@+id/typing_directions"
-    android:inputType="text" >
-    </EditText>
     
 <TextView  
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content" 
     android:text="@string/change_freq"
     />
-    
-<EditText android:layout_height="wrap_content" 
-    android:layout_width="fill_parent" 
-    android:id="@+id/typing_freq" 
-    android:inputType="text" >
-    </EditText>  
 
-<Button android:text="@string/submit" 
-    android:id="@+id/submit" 
+<TextView  
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content" 
+    android:id="@+id/frequency"
+    />
+    
+<Button android:text="@string/back" 
+    android:id="@+id/back" 
     android:layout_width="wrap_content" 
     android:layout_height="wrap_content"
-    android:onClick="onSubmitClick">
+    android:onClick="onBackClick">
     </Button>
 
 </LinearLayout>

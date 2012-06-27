@@ -3,7 +3,7 @@ package edu.upenn.cis542;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.TextView;
 
 public class ChangeActivity extends Activity {
 	
@@ -12,10 +12,9 @@ public class ChangeActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.change);
-		EditText typingDirections = (EditText)findViewById(R.id.typing_directions);
-		typingDirections.setText(MapViewActivity.num_directions + "");
-		EditText typingFrequency = (EditText)findViewById(R.id.typing_freq);
-		typingFrequency.setText(MapViewActivity.frequency + "");
+		
+		TextView freq = (TextView)findViewById(R.id.frequency);
+		freq.setText(MapViewActivity.frequency + "");
 	}
 
 	/**
@@ -23,16 +22,7 @@ public class ChangeActivity extends Activity {
 	 * 
 	 * @param view
 	 */
-	public void onSubmitClick(View view) {
-		EditText typingDirections = (EditText)findViewById(R.id.typing_directions);
-		String directions = typingDirections.getText().toString();
-		
-		EditText typingFrequency = (EditText)findViewById(R.id.typing_freq);
-		String freq = typingFrequency.getText().toString();
-		
-		MapViewActivity.num_directions = Integer.parseInt(directions);
-		MapViewActivity.frequency = Integer.parseInt(freq);
-		
+	public void onBackClick(View view) {
 		finish();
 	}
 }
