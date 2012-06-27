@@ -1,11 +1,19 @@
 package edu.upenn.cis542;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import com.google.android.maps.GeoPoint;
+
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.location.Location;
+import android.text.format.DateFormat;
 
 public class DbTableCreator extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "gpsdb";
@@ -78,5 +86,66 @@ public class DbTableCreator extends SQLiteOpenHelper {
 		}
 		c.close();
 		return returnValue;
+	}
+	
+	public double get24hrDist(String table){
+		double totalDist = 0;
+		String columns[] = {"dateTime", "latitude", "longitude"};
+		Cursor c = getWritableDatabase().query(table, columns, null, null, null, null, null);
+		if (c == null)
+			return 0;
+		parent.startManagingCursor(c);
+		int colDT = c.getColumnIndex("dateTime");
+		int colLng = c.getColumnIndex("longitude");
+		int colLat = c.getColumnIndex("latitude");
+		
+		if (!c.moveToNext())
+			return 0;
+		
+		String dt = c.getString(colDT);
+		String lat = c.getString(colLat);
+		String lng = c.getString(colLng);
+		
+		SimpleDateFormat formatter = new SimpleDateFormat("mm/dd/yy hh:mm:ss");
+		Date firstDate = null;
+		try {
+			firstDate = formatter.parse(dt);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return totalDist;
+		}
+		GeoPoint preGeo = new GeoPoint((int)(Double.parseDouble(lat)*1E6), (int)(Double.parseDouble(lng)*1E6));
+		
+		Date lastDate = null;
+		while (c.moveToNext()){
+			dt = c.getString(colDT);
+			try {
+				lastDate = formatter.parse(dt);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				break;
+			}
+			if (lastDate.getTime() - firstDate.getTime() > 24*3600*1000){
+				break;
+			}
+			lat = c.getString(colLat);
+			lng = c.getString(colLng);
+			GeoPoint curGeo = new GeoPoint((int)(Double.parseDouble(lat)*1E6), (int)(Double.parseDouble(lng)*1E6));
+			
+			totalDist += CalculateDistance(preGeo, curGeo);
+			preGeo = curGeo;
+		}
+		c.close();
+		return totalDist;
+	}
+	
+	private static float CalculateDistance(GeoPoint s, GeoPoint e) {
+		float[] results = new float[1];
+		Location.distanceBetween(s.getLatitudeE6() / 1E6,
+				s.getLongitudeE6() / 1E6, e.getLatitudeE6() / 1E6,
+				e.getLongitudeE6() / 1E6, results);
+		return results[results.length - 1];
 	}
 }

@@ -72,9 +72,9 @@ public class MapViewActivity extends MapActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		
+
 		thisContext = this;
-		
+
 		Intent i = getIntent();
 		ipAddr = i.getStringExtra("IP_ADDR");
 		port = i.getStringExtra("PORT_NUM");
@@ -144,8 +144,8 @@ public class MapViewActivity extends MapActivity {
 					phoneToArd = CalculateDistance(phoneCurPos, curPos);
 
 				if (phoneToArd < 70) {
-					AlertDialog.Builder dialog = new AlertDialog.Builder(thisContext
-							);
+					AlertDialog.Builder dialog = new AlertDialog.Builder(
+							thisContext);
 					dialog.setTitle("Win!");
 					dialog.setMessage("You have caught Arduino!\nYou win!");
 					dialog.setPositiveButton(R.string.ok,
@@ -158,7 +158,7 @@ public class MapViewActivity extends MapActivity {
 								}
 							});
 					dialog.show();
-					
+
 				}
 
 				if (phonePos == null)
@@ -347,7 +347,8 @@ public class MapViewActivity extends MapActivity {
 							itemizedoverlay.addOverlay(overlayitem);
 							mapView.invalidate();
 							LoginActivity.db.insertLocation("cserverTable",
-									curDate.toString(), latD + "", lonD + "");
+									formatter.format(curDate), latD + "", lonD
+											+ "");
 
 							if (frequency != 0) {
 								frequency = 0;
@@ -374,8 +375,10 @@ public class MapViewActivity extends MapActivity {
 								"Arduino", curDate.toLocaleString());
 						itemizedoverlay.addOverlay(overlayitem);
 						mapView.invalidate();
-						LoginActivity.db.insertLocation("cserverTable",
-								curDate.toString(), latD + "", lonD + "");
+						LoginActivity.db
+								.insertLocation("cserverTable",
+										formatter.format(curDate), latD + "",
+										lonD + "");
 					}
 					prePos = curPos;
 
