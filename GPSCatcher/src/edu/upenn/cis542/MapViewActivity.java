@@ -144,6 +144,8 @@ public class MapViewActivity extends MapActivity {
 					phoneToArd = CalculateDistance(phoneCurPos, curPos);
 
 				if (phoneToArd < 70) {
+					locationManager.removeUpdates(locationListener);
+					inquiry = 0;
 					AlertDialog.Builder dialog = new AlertDialog.Builder(
 							thisContext);
 					dialog.setTitle("Win!");
@@ -154,7 +156,7 @@ public class MapViewActivity extends MapActivity {
 								// clicked
 								public void onClick(DialogInterface dialog,
 										int id) {
-									onBackPressed();
+									finish();
 								}
 							});
 					dialog.show();
