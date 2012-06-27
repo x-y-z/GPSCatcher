@@ -4,42 +4,69 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <TextView  
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
-    android:text="@string/menu"
-    />
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/menu"
+        android:textColor="#66FF33"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
-<Button android:text="@string/view" 
-    android:id="@+id/view" 
-    android:layout_width="wrap_content" 
-    android:layout_height="wrap_content"
-    android:onClick="onViewClick">
-    </Button>
-    
-<Button android:text="@string/change" 
-    android:id="@+id/change" 
-    android:layout_width="wrap_content" 
-    android:layout_height="wrap_content"
-    android:onClick="onChangeClick">
-    </Button>
-
-<Button android:text="@string/gpscheck" 
-    android:layout_width="wrap_content" 
-    android:layout_height="wrap_content"
-    android:onClick="onGpsDBClick">
+    <Button
+        android:id="@+id/view"
+        android:layout_width="fill_parent"
+        android:background="#000000"
+        android:textColor="#ffffff"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:onClick="onViewClick"
+        android:text="@string/view" >
     </Button>
 
-<Button android:text="@string/phonecheck" 
-    android:layout_width="wrap_content" 
-    android:layout_height="wrap_content"
-    android:onClick="onPhoneDBClick">
+    <Button
+        android:layout_width="fill_parent"
+        android:background="#000000"
+        android:textColor="#ffffff"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:onClick="onGpsDBClick"
+        android:text="@string/gpscheck" >
     </Button>
-    
-<Button android:text="@string/quit" 
-    android:id="@+id/quit" 
-    android:layout_width="wrap_content" 
-    android:layout_height="wrap_content"
-    android:onClick="onQuitClick">
+
+    <Button
+        android:layout_width="fill_parent"
+        android:background="#000000"
+        android:textColor="#ffffff"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:onClick="onPhoneDBClick"
+        android:text="@string/phonecheck" >
     </Button>
+
+    <Button
+        android:id="@+id/change"
+        android:layout_width="fill_parent"
+        android:background="#000000"
+        android:textColor="#ffffff"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:onClick="onChangeClick"
+        android:text="@string/change" >
+    </Button>
+
+    <Button
+        android:id="@+id/quit"
+        android:layout_width="fill_parent"
+        android:background="#000000"
+        android:textColor="#ffffff"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:onClick="onQuitClick"
+        android:text="@string/quit" >
+    </Button>
+
 </LinearLayout> 
