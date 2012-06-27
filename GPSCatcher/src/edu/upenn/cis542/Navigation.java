@@ -32,7 +32,10 @@ public class Navigation {
 
 	public void performSearch(GeoPoint saddr, GeoPoint daddr)
 			throws Exception {
-
+		
+		if (saddr == null || daddr == null)
+			throw new Exception("One of address is empty.");
+			
 		StringBuilder urlString = new StringBuilder();
 		urlString.append("http://maps.google.com/maps?f=d&hl=en");
 		urlString.append("&saddr=");// from

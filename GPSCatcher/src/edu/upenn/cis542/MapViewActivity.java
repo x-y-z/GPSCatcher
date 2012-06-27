@@ -71,7 +71,7 @@ public class MapViewActivity extends MapActivity {
 	private double phoneToArd = 0;
 
 	public static GeoPoint phonePos = null;
-	private int idle = 1000;
+	private int idle = 5000;
 	private int slowDown = 0;
 
 	private int inquiry = 1;
