@@ -4,29 +4,32 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-<TextView  
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
-    android:text="@string/settings"
-    />
-    
-<TextView  
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
-    android:text="@string/change_freq"
-    />
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.20"
+        android:text="@string/settings"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#66FF33" />
 
-<TextView  
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
-    android:id="@+id/frequency"
-    />
-    
-<Button android:text="@string/back" 
-    android:id="@+id/back" 
-    android:layout_width="wrap_content" 
-    android:layout_height="wrap_content"
-    android:onClick="onBackClick">
-    </Button>
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.09"
+        android:text="@string/change_freq" />
+
+    <TextView
+        android:id="@+id/frequency"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_weight="0.84" />
+
+    <Button
+        android:id="@+id/back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onBackClick"
+        android:text="@string/back" />
 
 </LinearLayout>
