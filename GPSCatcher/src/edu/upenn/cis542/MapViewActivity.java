@@ -60,6 +60,9 @@ public class MapViewActivity extends MapActivity {
 	private int slowDown = 0;
 
 	private int inquiry = 1;
+	
+	private int winDist = 10;
+	private int ignoreOffset = 5;
 
 	private GeoPoint prePos = null;
 	private double totalDistance = 0;
@@ -143,7 +146,7 @@ public class MapViewActivity extends MapActivity {
 				if (curPos != null)
 					phoneToArd = CalculateDistance(phoneCurPos, curPos);
 
-				if (phoneToArd < 70) {
+				if (phoneToArd < winDist) {
 					locationManager.removeUpdates(locationListener);
 					inquiry = 0;
 					AlertDialog.Builder dialog = new AlertDialog.Builder(
@@ -178,8 +181,8 @@ public class MapViewActivity extends MapActivity {
 
 				Toast.makeText(
 						getApplicationContext(),
-						"gps loc:" + loc.getLatitude() + ", "
-								+ loc.getLongitude(), Toast.LENGTH_LONG).show();
+						"Phone is at: (" + loc.getLatitude() + ", "
+								+ loc.getLongitude() +")", Toast.LENGTH_LONG).show();
 
 				if (loc != null) {
 					LoginActivity.db.insertLocation("androidTable",
@@ -337,7 +340,7 @@ public class MapViewActivity extends MapActivity {
 
 					if (prePos != null) {
 						double thisJump = CalculateDistance(prePos, curPos);
-						if (thisJump > 10) {
+						if (thisJump > ignoreOffset) {
 							slowDown = 0;
 							mapOverlays.add(new LineOnMap(prePos, curPos,
 									project));
