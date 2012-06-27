@@ -40,7 +40,9 @@ import android.widget.Toast;
 public class MapViewActivity extends MapActivity {
 	private TextView tv;
 	private Date curDate;
+	/** current date from arduino */
 	private GeoPoint curPos;
+	/** current gps location from arduino */
 	private GPSPoints itemizedoverlay;
 	private List<Overlay> mapOverlays;
 	private Projection project;
@@ -48,10 +50,13 @@ public class MapViewActivity extends MapActivity {
 	private Context thisContext;
 
 	public static int num_directions = -1;
+	/** number of gps location to be read */
 	public static int frequency = -1;
+	/** interval between two reads */
 	private String ipAddr;
 	private String port;
 	private GPSPoints POIs;
+	/** restaurants */
 	private GPSPoints phones;
 	private double phoneToArd = 0;
 
@@ -60,7 +65,7 @@ public class MapViewActivity extends MapActivity {
 	private int slowDown = 0;
 
 	private int inquiry = 1;
-	
+
 	private int winDist = 10;
 	private int ignoreOffset = 5;
 
@@ -90,6 +95,7 @@ public class MapViewActivity extends MapActivity {
 		mapOverlays = mapView.getOverlays();
 		project = mapView.getProjection();
 
+		// load icons from resources
 		Drawable red_dot = getResources().getDrawable(R.drawable.red_dot);
 		red_dot.setBounds(-red_dot.getIntrinsicWidth() / 20,
 				-red_dot.getIntrinsicHeight() / 10,
@@ -112,7 +118,7 @@ public class MapViewActivity extends MapActivity {
 
 		// initial inquiry
 		num_directions = 9;
-		frequency = 0;
+		frequency = 1;
 
 		new GetArduinoPos().execute("");
 
@@ -121,6 +127,7 @@ public class MapViewActivity extends MapActivity {
 
 		// phonePos = new GeoPoint((int) (39.95 * 1E6), (int) (-75.20 * 1E6));
 
+		// register location manager
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		provider = LocationManager.GPS_PROVIDER;
 		Location lastLoc = locationManager.getLastKnownLocation(provider);
@@ -146,6 +153,7 @@ public class MapViewActivity extends MapActivity {
 				if (curPos != null)
 					phoneToArd = CalculateDistance(phoneCurPos, curPos);
 
+				// you win, stop gps listening, and stop arduino
 				if (phoneToArd < winDist) {
 					locationManager.removeUpdates(locationListener);
 					inquiry = 0;
@@ -155,8 +163,6 @@ public class MapViewActivity extends MapActivity {
 					dialog.setMessage("You have caught Arduino!\nYou win!");
 					dialog.setPositiveButton(R.string.ok,
 							new DialogInterface.OnClickListener() {
-								// This is the method to call when the button is
-								// clicked
 								public void onClick(DialogInterface dialog,
 										int id) {
 									finish();
@@ -182,7 +188,8 @@ public class MapViewActivity extends MapActivity {
 				Toast.makeText(
 						getApplicationContext(),
 						"Phone is at: (" + loc.getLatitude() + ", "
-								+ loc.getLongitude() +")", Toast.LENGTH_LONG).show();
+								+ loc.getLongitude() + ")", Toast.LENGTH_LONG)
+						.show();
 
 				if (loc != null) {
 					LoginActivity.db.insertLocation("androidTable",
@@ -218,6 +225,7 @@ public class MapViewActivity extends MapActivity {
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
 				(long) 10, (float) 0.1, locationListener);
 
+		// add arduino, restaurant, phone into map layout
 		mapOverlays.add(itemizedoverlay);
 		mapOverlays.add(POIs);
 		mapOverlays.add(phones);
@@ -228,6 +236,7 @@ public class MapViewActivity extends MapActivity {
 		return false;
 	}
 
+	// connect to the C server
 	private String comServer() {
 		Socket s;
 		String str = null;
@@ -236,6 +245,7 @@ public class MapViewActivity extends MapActivity {
 			InputStream in = s.getInputStream();
 			PrintWriter out = new PrintWriter(s.getOutputStream(), true);
 
+			// send command to server
 			if (num_directions == -1 || frequency == -1) {
 				out.println("1,0.");
 			} else {
@@ -270,6 +280,7 @@ public class MapViewActivity extends MapActivity {
 		}
 
 		protected void onPostExecute(String result) {
+			// parsing job
 			DateFormat formatter;
 			if (result.startsWith("java.net")) {
 				Toast.makeText(getApplicationContext(), result,
@@ -283,9 +294,10 @@ public class MapViewActivity extends MapActivity {
 				int entryCnt = Integer.parseInt(array[0]) * 4;
 
 				for (int i = 0; i < entryCnt; i += 4) {
+					// parsing date, time
 					String aDate = array[i + 1] + " " + array[i + 2];
-					formatter = new SimpleDateFormat("mm/dd/yy hh:mm:ss");
-					formatter.setTimeZone(TimeZone.getTimeZone("GMT-1"));
+					formatter = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
+					formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
 					try {
 						curDate = (Date) formatter.parse(aDate);
 					} catch (ParseException e) {
@@ -293,12 +305,18 @@ public class MapViewActivity extends MapActivity {
 					}
 
 					Date phoneDate = new Date();
-					if (Math.abs(phoneDate.getTime() - curDate.getTime()) > 10) {
-						Toast.makeText(getApplicationContext(),
-								"Arduino GPS Location is out of date!",
+					// check if the gps location is out of date
+					if (Math.abs(phoneDate.getTime() - curDate.getTime()) > 10000) {
+						Toast.makeText(
+								getApplicationContext(),
+								"Arduino GPS Location is out of date!\nPhone:"
+										+ phoneDate.toLocaleString()
+										+ "\nArduino:"
+										+ curDate.toLocaleString(),
 								Toast.LENGTH_SHORT).show();
 					}
 
+					// parsing GPS locations
 					String la = new String(array[i + 3]);
 					String lo = new String(array[i + 4]);
 					la = la.replaceAll("\\s", "");
@@ -319,7 +337,7 @@ public class MapViewActivity extends MapActivity {
 
 					String[] lat = la.split("\\*|'|\"");
 
-					double offset = new Random().nextDouble() * 2;
+					double offset = 0;// new Random().nextDouble() * 2;
 
 					double latD = (double) Integer.parseInt(lat[0])
 							+ laSign
@@ -328,7 +346,7 @@ public class MapViewActivity extends MapActivity {
 							/ 3600;
 					String[] lon = lo.split("\\*|'|\"");
 
-					offset = new Random().nextDouble() * 2;
+					offset = 0;// new Random().nextDouble() * 2;
 					double lonD = (double) Integer.parseInt(lon[0])
 							+ loSign
 							* (((double) Integer.parseInt(lon[1])) * 60
@@ -336,43 +354,48 @@ public class MapViewActivity extends MapActivity {
 							/ 3600;
 					curPos = new GeoPoint((int) (latD * 1E6),
 							(int) (lonD * 1E6));
-					// tv.setText(curDate + "\n" + curPos);
 
+					// calculate total distance traveled in this running
 					if (prePos != null) {
 						double thisJump = CalculateDistance(prePos, curPos);
+						// if arduino is moving far away
 						if (thisJump > ignoreOffset) {
 							slowDown = 0;
 							mapOverlays.add(new LineOnMap(prePos, curPos,
 									project));
-							// itemizedoverlay.addOverlay(new LineOnMap(prePos,
-							// curPos, project));
 							totalDistance += thisJump;
 							OverlayItem overlayitem = new OverlayItem(curPos,
 									"Arduino", curDate.toLocaleString());
 							itemizedoverlay.addOverlay(overlayitem);
 							mapView.invalidate();
+							// store into database, in original format, GMT
 							LoginActivity.db.insertLocation("cserverTable",
 									formatter.format(curDate), latD + "", lonD
 											+ "");
 
-							if (frequency != 0) {
-								frequency = 0;
+							if (frequency != 1 && frequency < 6000) {
+								frequency = 1;
 								Toast.makeText(
 										getApplicationContext(),
 										"Arduino is moving fast. Speed up GPS inquiry frequency!",
 										Toast.LENGTH_SHORT).show();
 							}
 						} else {
-							slowDown++;
-							if (slowDown > 5) {
-								frequency += 1000;
-								if (frequency > 5000)
-									frequency = 5000;
+							// if arduino is not moving, ignore new position and
+							// slow down
+							// inquiry frequency
+							if (frequency < 6000) {
+								slowDown++;
+								if (slowDown > 5) {
+									frequency += 1000;
+									if (frequency > 5000)
+										frequency = 5000;
 
-								Toast.makeText(
-										getApplicationContext(),
-										"Arduino is not moving fast. Slow down GPS inquiry frequency!",
-										Toast.LENGTH_SHORT).show();
+									Toast.makeText(
+											getApplicationContext(),
+											"Arduino is not moving fast. Slow down GPS inquiry frequency!",
+											Toast.LENGTH_SHORT).show();
+								}
 							}
 						}
 					} else {
@@ -380,6 +403,7 @@ public class MapViewActivity extends MapActivity {
 								"Arduino", curDate.toLocaleString());
 						itemizedoverlay.addOverlay(overlayitem);
 						mapView.invalidate();
+						// store into database, GMT
 						LoginActivity.db
 								.insertLocation("cserverTable",
 										formatter.format(curDate), latD + "",
@@ -389,6 +413,7 @@ public class MapViewActivity extends MapActivity {
 
 				}
 
+				//show current information
 				tv.setText("Arduino is at:(" + (double) curPos.getLatitudeE6()
 						/ 1E6 + "," + (double) curPos.getLongitudeE6() / 1E6
 						+ ")\n" + "Dist. behind:"
@@ -397,13 +422,7 @@ public class MapViewActivity extends MapActivity {
 						+ new DecimalFormat("#.##").format(totalDistance)
 						+ " m.\n");
 
-				// LoginActivity.cserver.close();
-				// MapView mapView = (MapView) findViewById(R.id.mapview);
-				// MapController mc = mapView.getController();
-				// mc.animateTo(curPos);
-				// mc.setZoom(15);
-				// mapView.invalidate();
-
+				//idle for a while
 				try {
 					Thread.sleep(idle);
 				} catch (InterruptedException e) {
@@ -419,6 +438,7 @@ public class MapViewActivity extends MapActivity {
 
 	}
 
+	// calculate distance between two GPS points
 	private static float CalculateDistance(GeoPoint s, GeoPoint e) {
 		float[] results = new float[1];
 		Location.distanceBetween(s.getLatitudeE6() / 1E6,
@@ -427,12 +447,13 @@ public class MapViewActivity extends MapActivity {
 		return results[results.length - 1];
 	}
 
+	// start arduino and stop it
 	public void onRefreshClick(View v) {
 		Button switcher = (Button) findViewById(R.id.refresh);
 		if (inquiry == 1) {
 			inquiry = 0;
 			switcher.setText("Start");
-			frequency = 0;
+			// frequency = 0;
 			num_directions = 0;
 			while (!comServer().contains("stop"))
 				;
@@ -440,12 +461,13 @@ public class MapViewActivity extends MapActivity {
 		} else if (inquiry == 0) {
 			inquiry = 1;
 			switcher.setText("Stop");
-			frequency = 0;
+			// frequency = 1;
 			num_directions = 9;
 			new GetArduinoPos().execute("");
 		}
 	}
 
+	// go to phone location
 	public void onPhoneLocation(View v) {
 		if (phonePos == null) {
 			Toast.makeText(getApplicationContext(), "GPS not ready yet",
@@ -460,6 +482,7 @@ public class MapViewActivity extends MapActivity {
 		mapView.invalidate();
 	}
 
+	// go to arduino location
 	public void onArdLocation(View v) {
 		MapView mapView = (MapView) findViewById(R.id.mapview);
 		MapController mc = mapView.getController();

@@ -5,6 +5,8 @@ import java.util.List;
 import com.google.android.maps.GeoPoint;
 import com.google.api.client.util.Key;
 
+
+//Place structure for JSON parsing
 public class Place {
 	@Key("geometry")
 	public Geometry geometry;

@@ -1,3 +1,9 @@
+/*
+ * Store the GPS location of Arduino
+ * 
+ * 
+ */
+
 package edu.upenn.cis542;
 
 import java.util.ArrayList;
@@ -68,13 +74,11 @@ public class GPSPoints extends ItemizedOverlay<OverlayItem> {
 
 	@Override
 	protected OverlayItem createItem(int i) {
-		// TODO Auto-generated method stub
 		return mOverlays.get(i);
 	}
 
 	@Override
 	public int size() {
-		// TODO Auto-generated method stub
 		return mOverlays.size();
 	}
 
@@ -82,15 +86,15 @@ public class GPSPoints extends ItemizedOverlay<OverlayItem> {
 	protected boolean onTap(int index) {
 		final OverlayItem item = mOverlays.get(index);
 		if (isPOI == 0) {
-
+			//onTap about Arduino points
 			if (index == mOverlays.size() - 1) {
+				//only most updated arduino point have navigation
+				//and restaurant function
 				AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
 				dialog.setTitle(item.getTitle());
 				dialog.setMessage(item.getSnippet());
 				dialog.setPositiveButton(R.string.chase,
 						new DialogInterface.OnClickListener() {
-							// This is the method to call when the button is
-							// clicked
 							public void onClick(DialogInterface dialog, int id) {
 								POIs.clearAll();
 
@@ -160,6 +164,7 @@ public class GPSPoints extends ItemizedOverlay<OverlayItem> {
 
 				dialog.show();
 			} else {
+				//show the time of this location
 				AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
 				dialog.setTitle(item.getTitle());
 				dialog.setMessage(item.getSnippet());
@@ -167,6 +172,7 @@ public class GPSPoints extends ItemizedOverlay<OverlayItem> {
 			}
 
 		} else {// poi
+			//onTap for POIs
 			AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
 			dialog.setTitle(item.getTitle());
 			dialog.setMessage(item.getSnippet());

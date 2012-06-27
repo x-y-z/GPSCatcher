@@ -12,6 +12,10 @@ import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.jackson.JacksonFactory;
 
 /*
+ * Get points of interest around a GPS point.
+ * 
+ * Here we only get POIs with type: food
+ * 
  * The code is modified from: http://ddewaele.blogspot.com/2011/05/introducing-google-places-api.html
  * 
  * 
@@ -53,11 +57,6 @@ public class PlacesSearch {
 				pl = request.execute().parseAs(PlacesList.class);
 			}
 				
-			
-//			System.out.println("STATUS = " + places.status);
-//			for (Place place : places.results) {
-//				System.out.println(place);
-//			}
 
 		} catch (HttpResponseException e) {
 			System.err.println(e);

@@ -1,5 +1,8 @@
 /*
- * borrowed from http://stackoverflow.com/questions/2176397/drawing-a-line-path-on-google-maps
+ * Draw lines between points
+ * 
+ * Code is modified from: 
+ * http://stackoverflow.com/questions/2176397/drawing-a-line-path-on-google-maps
  * 
  */
 

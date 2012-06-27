@@ -1,3 +1,9 @@
+/*
+ * Main menu of the app, you can choose 
+ * view map, check GPS locations, check
+ * reading frequency, and quit
+ * 
+ */
 package edu.upenn.cis542;
 
 import android.app.Activity;

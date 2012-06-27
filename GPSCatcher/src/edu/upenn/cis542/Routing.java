@@ -1,4 +1,7 @@
 /*
+ * Navigation structure
+ * 
+ * Code is modified from:
  * http://stackoverflow.com/questions/3109158/how-to-draw-a-path-on-a-map-using-kml-file/3109723#3109723
  * 
  */

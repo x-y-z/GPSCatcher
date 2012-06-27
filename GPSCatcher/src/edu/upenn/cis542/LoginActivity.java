@@ -1,3 +1,7 @@
+/*
+ * Connect to C server before using the app
+ * 
+ */
 package edu.upenn.cis542;
 
 import java.io.IOException;
