@@ -27,5 +27,7 @@
     <string name="celltitle">Phone Location Database</string>
     <string name="gpstitle">Arduino Location Database</string>
     <string name="ok">OK</string>
+    <string name="change_num">Number of GPS Locations from Arduino</string>
+    <string name="submit">Submit</string>
     
 </resources>

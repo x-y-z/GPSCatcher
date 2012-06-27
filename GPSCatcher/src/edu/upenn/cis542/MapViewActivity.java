@@ -71,7 +71,7 @@ public class MapViewActivity extends MapActivity {
 	private double phoneToArd = 0;
 
 	public static GeoPoint phonePos = null;
-	private int idle = 5000;
+	public static int idle = 1000;
 	private int slowDown = 0;
 
 	private int inquiry = 1;
@@ -283,6 +283,12 @@ public class MapViewActivity extends MapActivity {
 		@Override
 		protected String doInBackground(String... arg0) {
 
+			// idle for a while
+			try {
+				Thread.sleep(idle);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			return comServer();
 		}
 
@@ -429,12 +435,7 @@ public class MapViewActivity extends MapActivity {
 						+ new DecimalFormat("#.##").format(totalDistance)
 						+ " m.\n");
 
-				// idle for a while
-				try {
-					Thread.sleep(idle);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+				
 
 				if (inquiry == 1) {
 					new GetArduinoPos().execute("");

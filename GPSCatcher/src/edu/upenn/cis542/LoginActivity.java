@@ -112,9 +112,11 @@ public class LoginActivity extends Activity {
 				if((pct <= 20) && (pct > 10)) {
 					MapViewActivity.num_directions = 1;
 					MapViewActivity.frequency = 20000;
+					MapViewActivity.idle = 20000;
 				} else if(pct <= 10) {
 					MapViewActivity.num_directions = 1;
 					MapViewActivity.frequency = 60000;
+					MapViewActivity.idle = 60000;
 				}
 			}
 			
