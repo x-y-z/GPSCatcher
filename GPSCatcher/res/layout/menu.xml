@@ -14,8 +14,6 @@
     <Button
         android:id="@+id/view"
         android:layout_width="fill_parent"
-        android:background="#000000"
-        android:textColor="#ffffff"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -25,8 +23,6 @@
 
     <Button
         android:layout_width="fill_parent"
-        android:background="#000000"
-        android:textColor="#ffffff"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -36,8 +32,6 @@
 
     <Button
         android:layout_width="fill_parent"
-        android:background="#000000"
-        android:textColor="#ffffff"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -48,8 +42,6 @@
     <Button
         android:id="@+id/change"
         android:layout_width="fill_parent"
-        android:background="#000000"
-        android:textColor="#ffffff"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -60,8 +52,6 @@
     <Button
         android:id="@+id/quit"
         android:layout_width="fill_parent"
-        android:background="#000000"
-        android:textColor="#ffffff"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_height="0dp"
         android:layout_weight="1"
