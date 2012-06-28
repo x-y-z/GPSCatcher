@@ -30,6 +30,7 @@ uint s_pack_sz = 0;
 int readStatus = 1;//0:nothing, 1:wait for date, 2:wait for time, 3:wait for latitude, 4:wait for longtitude
 int writeStatus = 0;
 int readFreq = 0;
+int loop = 1;
 
 int readline(const char *in, int in_len, char *out, int* out_len);
 void *start_server(void * arg);
@@ -37,7 +38,7 @@ void *start_server(void * arg);
 int main()
 {
     pthread_t s_id;
-    int fd = open("/dev/ttyUSB10", O_RDWR);
+    int fd = open("/dev/ttyACM0", O_RDWR);
 
     if (fd == -1)
     {
@@ -65,7 +66,7 @@ int main()
     memset(buf, 0, 255);
     memset(line, 0, 255);
 
-    while(1)
+    while(loop)
     {
         memset(buf, 0, 255);
         //set gps status
@@ -272,7 +273,12 @@ void *start_server(void * arg)
 
           printf("Server received: %s", recv_data);
 
-          if (strncmp(recv_data, "0", 1) == 0)
+          if (strncmp(recv_data, "-", 1) == 0)
+          {
+              loop = 0;
+              pthread_exit(NULL);
+          }
+          else if (strncmp(recv_data, "0", 1) == 0)
           {
               pthread_mutex_lock(&mutex);
               writeStatus = 0;
